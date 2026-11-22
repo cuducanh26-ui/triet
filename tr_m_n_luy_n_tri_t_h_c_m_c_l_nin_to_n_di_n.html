@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trạm Ôn Luyện Triết Học Mác - Lênin Toàn Diện</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            crimson: {
+              50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5',
+              400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c',
+              800: '#991b1b', 900: '#7f1d1d'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .flashcard-scene { perspective: 1000px; }
+    .flashcard-inner {
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+    }
+    .flashcard-inner.is-flipped { transform: rotateY(180deg); }
+    .flashcard-face {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flashcard-back { transform: rotateY(180deg); }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.45); border-radius: 9999px; }
+    .fade-in { animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 min-h-screen flex flex-col">
+
+  <!-- Top Header -->
+  <header class="sticky top-0 z-30 bg-white/95 dark:bg-stone-900/95 backdrop-blur border-b border-stone-200 dark:border-stone-800">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <button id="btnMobileMenu" type="button" class="lg:hidden p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800" aria-label="Mở menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-crimson-700 to-crimson-900 text-white flex items-center justify-center shrink-0 shadow-sm">
+          <i data-lucide="book-open-check" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-sm sm:text-base font-extrabold tracking-tight truncate">Triết Học Mác - Lênin</h1>
+          <p class="text-[11px] text-stone-500 dark:text-stone-400 truncate hidden sm:block">Hệ thống Ôn luyện Toàn diện • Chuẩn Giáo trình 2021</p>
+        </div>
+      </div>
+
+      <!-- Primary Navigation (Desktop) -->
+      <nav id="desktopNav" class="hidden lg:flex items-center gap-1 bg-stone-100 dark:bg-stone-800/80 p-1 rounded-xl">
+        <button data-nav="dashboard" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>Tổng quan</button>
+        <button data-nav="study" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"><i data-lucide="library" class="w-3.5 h-3.5"></i>Lý thuyết</button>
+        <button data-nav="practice" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"><i data-lucide="target" class="w-3.5 h-3.5"></i>Luyện tập</button>
+        <button data-nav="essays" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"><i data-lucide="file-text" class="w-3.5 h-3.5"></i>Tự luận</button>
+        <button data-nav="traps" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>Bẫy dễ sai</button>
+        <button data-nav="flashcards" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5"><i data-lucide="layers" class="w-3.5 h-3.5"></i>Flashcards</button>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button id="btnSearchModal" type="button" class="p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition" title="Tìm nhanh khái niệm">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </button>
+        <button id="btnDarkMode" type="button" class="p-2 rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition" title="Chế độ Sáng / Tối">
+          <i data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobileNavDrawer" class="hidden lg:hidden border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 px-3 py-2.5">
+      <div class="grid grid-cols-3 gap-1.5">
+        <button data-nav="dashboard" class="nav-btn px-2.5 py-2 rounded-lg text-xs font-semibold flex flex-col items-center gap-1"><i data-lucide="layout-dashboard" class="w-4 h-4"></i>Tổng quan</button>
+        <button data-nav="study" class="nav-btn px-2.5 py-2 rounded-lg text-xs font-semibold flex flex-col items-center gap-1"><i data-lucide="library" class="w-4 h-4"></i>Lý thuyết</button>
+        <button data-nav="practice" class="nav-btn px-2.5 py-2 rounded-lg text-xs font-semibold flex flex-col items-center gap-1"><i data-lucide="target" class="w-4 h-4"></i>Luyện tập</button>
+        <button data-nav="essays" class="nav-btn px-2.5 py-2 rounded-lg text-xs font-semibold flex flex-col items-center gap-1"><i data-lucide="file-text" class="w-4 h-4"></i>Tự luận</button>
+        <button data-nav="traps" class="nav-btn px-2.5 py-2 rounded-lg text-xs font-semibold flex flex-col items-center gap-1"><i data-lucide="alert-triangle" class="w-4 h-4"></i>Bẫy dễ sai</button>
+        <button data-nav="flashcards" class="nav-btn px-2.5 py-2 rounded-lg text-xs font-semibold flex flex-col items-center gap-1"><i data-lucide="layers" class="w-4 h-4"></i>Flashcards</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="appMain" class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 sm:py-6">
+    <!-- Dynamic View Container -->
+  </main>
+
+  <!-- Search Modal -->
+  <div id="searchModal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-start justify-center pt-16 px-4">
+    <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
+      <div class="p-3.5 border-b border-stone-200 dark:border-stone-800 flex items-center gap-2.5">
+        <i data-lucide="search" class="w-5 h-5 text-stone-400"></i>
+        <input id="globalSearchInput" type="text" placeholder="Tìm khái niệm, quy luật, cặp phạm trù, bẫy dễ sai, tự luận..." class="w-full bg-transparent text-sm focus:outline-none" />
+        <button id="btnCloseSearch" type="button" class="p-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-500">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="globalSearchResults" class="max-h-96 overflow-y-auto p-3 space-y-2 scrollbar-thin text-sm">
+        <p class="text-stone-400 text-center py-6">Nhập từ khóa (ví dụ: vật chất, lượng chất, cơ sở hạ tầng, tha hóa, Lênin...)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastBox" class="fixed bottom-4 right-4 z-50 pointer-events-none space-y-2"></div>
+
+  <!-- Confirm Reset Modal -->
+  <div id="resetModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-2xl max-w-md w-full p-6 shadow-xl">
+      <h3 class="text-base font-bold text-stone-900 dark:text-white">Đặt lại toàn bộ tiến độ ôn tập?</h3>
+      <p class="text-sm text-stone-600 dark:text-stone-400 mt-2">Mọi chuyên đề đã đánh dấu hoàn thành, lịch sử câu làm đúng/sai và trạng thái thẻ nhớ sẽ được đưa về 0.</p>
+      <div class="mt-5 flex justify-end gap-2">
+        <button id="btnCancelReset" type="button" class="px-4 py-2 rounded-lg text-sm font-medium bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700">Hủy</button>
+        <button id="btnConfirmReset" type="button" class="px-4 py-2 rounded-lg text-sm font-semibold bg-crimson-700 text-white hover:bg-crimson-800">Xác nhận đặt lại</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ============================================================================
+// 1. DỮ LIỆU KIẾN THỨC TOÀN DIỆN (3 CHƯƠNG - 10 CHUYÊN ĐỀ CHUẨN GIÁO TRÌNH 2021)
+// ============================================================================
+const TOPICS = [
+  // -------------------- CHƯƠNG 1 --------------------
+  {
+    id: 'c1-1',
+    chapter: 1,
+    code: '1.1',
+    title: 'Triết học và Vấn đề cơ bản của Triết học',
+    subtitle: 'Nguồn gốc, đối tượng, thế giới quan, 2 mặt vấn đề cơ bản, CNDV/CNDT, Biện chứng & Siêu hình',
+    weight: 'Trọng tâm Trắc nghiệm & Đúng/Sai',
+    core: [
+      {
+        heading: '1. Khái lược về Triết học',
+        points: [
+          '<strong>Nguồn gốc ra đời (Thế kỷ VIII – VI TCN ở phương Đông & phương Tây):</strong> Gồm 2 nguồn gốc: <em>Nguồn gốc nhận thức</em> (tư duy con người đạt trình độ trừu tượng hóa, khái quát hóa cao để hệ thống hóa tri thức) và <em>Nguồn gốc xã hội</em> (xã hội chiếm hữu nô lệ ra đời, có sự phân công lao động trí óc tách khỏi lao động chân tay, xuất hiện giai cấp và tầng lớp trí thức).',
+          '<strong>Khái niệm:</strong> Triết học là hệ thống quan điểm lý luận chung nhất về thế giới và vị trí con người trong thế giới đó; là khoa học về những quy luật vận động, phát triển chung nhất của tự nhiên, xã hội và tư duy.',
+          '<strong>Đối tượng nghiên cứu qua lịch sử:</strong> Thời cổ đại là "khoa học của mọi khoa học"; thời Trung cổ là "tôi tớ của thần học"; thời Phục hưng - Cận đại dần tách các khoa học cụ thể; đến Triết học Mác - Lênin xác định đúng đối tượng là tiếp tục giải quyết mối quan hệ giữa tồn tại và tư duy, vật chất và ý thức trên lập trường duy vật triệt để và nghiên cứu quy luật chung nhất.',
+          '<strong>Hạt nhân lý luận của thế giới quan:</strong> Thế giới quan gồm 3 yếu tố (tri thức, niềm tin, lý tưởng) với 3 hình thức cơ bản (huyền thoại, tôn giáo, triết học). Triết học không phải là toàn bộ thế giới quan mà là <em>hạt nhân lý luận</em> của thế giới quan vì nó diễn đạt bằng hệ thống phạm trù, quy luật có tính lý luận cao nhất.'
+        ]
+      },
+      {
+        heading: '2. Vấn đề cơ bản của Triết học (Ph. Ăngghen khái quát)',
+        points: [
+          '<strong>Nội dung:</strong> Vấn đề cơ bản lớn của mọi triết học, đặc biệt là triết học hiện đại, là <strong>mối quan hệ giữa tư duy và tồn tại</strong> (hay giữa ý thức và vật chất, tinh thần và tự nhiên).',
+          '<strong>Mặt thứ nhất (Bản thể luận):</strong> Giữa ý thức và vật chất thì cái nào có trước, cái nào có sau, cái nào quyết định cái nào? → Giải quyết mặt này chia triết học thành 2 trường phái đối lập: <strong>Chủ nghĩa duy vật (CNDV)</strong> và <strong>Chủ nghĩa duy tâm (CNDT)</strong>.',
+          '<strong>Mặt thứ hai (Nhận thức luận):</strong> Con người có khả năng nhận thức được thế giới hay không? → Chia thành <strong>Thuyết khả tri</strong> (nhận thức được) và <strong>Thuyết bất khả tri</strong> (không thể nhận thức bản chất sự vật, tiêu biểu là Hume, Kant với "vật tự nó") và <strong>Hoài nghi luận</strong>.'
+        ]
+      },
+      {
+        heading: '3. Chủ nghĩa duy vật, Chủ nghĩa duy tâm & Nhị nguyên luận',
+        table: {
+          headers: ['Trường phái', 'Hình thức lịch sử', 'Đặc trưng cốt lõi & Đại biểu'],
+          rows: [
+            ['CNDV (Nhất nguyên duy vật)', '1. CNDV chất phác (Cổ đại)<br>2. CNDV siêu hình (TK XVII–XVIII)<br>3. CNDV biện chứng (Mác–Lênin)', '1. Đúng ở xuất phát điểm tự nhiên nhưng trực quan, đồng nhất vật chất với nước/lửa/nguyên tử (Thales, Democritus).<br>2. Cơ giới, máy móc, xem thế giới như cỗ máy khổng lồ cô lập.<br>3. Đỉnh cao khoa học, thống nhất duy vật và biện chứng.'],
+            ['CNDT (Nhất nguyên duy tâm)', '1. CNDT chủ quan<br>2. CNDT khách quan', '1. Thừa nhận tính thứ nhất của ý thức con người (Berkeley, Hume).<br>2. Thừa nhận tính thứ nhất của tinh thần khách quan có trước con người như "Ý niệm" (Plato), "Ý niệm tuyệt đối" (Hegel).'],
+            ['Nhị nguyên luận', 'Tiêu biểu: R. Descartes', 'Cho rằng vật chất và tinh thần tồn tại song song, độc lập, không cái nào sinh ra cái nào (cuối cùng thường trượt sang CNDT).']
+          ]
+        }
+      },
+      {
+        heading: '4. Phương pháp Biện chứng và Phương pháp Siêu hình',
+        points: [
+          '<strong>Phương pháp siêu hình:</strong> Nhận thức đối tượng ở trạng thái <em>cô lập, tách rời</em>; <em>tĩnh tại, bất biến</em>; nếu có biến đổi chỉ là tăng giảm thuần túy về lượng; nguyên nhân biến đổi nằm ở bên ngoài sự vật. Có công lớn trong giải quyết các vấn đề cơ học cổ điển nhưng bất lực khi giải thích sự phát triển phức tạp.',
+          '<strong>Phương pháp biện chứng:</strong> Nhận thức đối tượng trong <em>mối liên hệ phổ biến, ràng buộc lẫn nhau</em>; trong trạng thái <em>vận động, biến đổi, phát triển không ngừng</em>; nguồn gốc phát triển là đấu tranh giữa các mặt đối lập bên trong sự vật.',
+          '<strong>3 hình thức lịch sử của Phép biện chứng:</strong> (1) Phép biện chứng tự phát thời cổ đại (Lão Tử, Phật giáo, Heraclitus); (2) Phép biện chứng duy tâm cổ điển Đức (đỉnh cao là Hegel — lần đầu trình bày có hệ thống nhưng "đứng bằng đầu"); (3) Phép biện chứng duy vật (Mác - Ăngghen sáng lập, Lênin phát triển — lộn ngược phép biện chứng Hegel đứng vững trên đôi chân duy vật).'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Vì sao chỉ có MỘT vấn đề cơ bản của triết học?</strong> Vì mọi hiện tượng trong vũ trụ suy cho cùng chỉ quy về 2 phạm trù rộng nhất là vật chất và ý thức; giải quyết quan hệ giữa chúng là cơ sở, nền tảng để giải quyết mọi vấn đề triết học khác và là tiêu chuẩn phân định lập trường triết học.',
+      '<strong>Phân biệt "Nhất nguyên luận" và "Nhị nguyên luận":</strong> Cả CNDV và CNDT đều là <em>nhất nguyên luận</em> (chỉ thừa nhận 1 bản nguyên quyết định thế giới: hoặc vật chất, hoặc tinh thần). Đừng nhầm CNDV là nhất nguyên còn CNDT là nhị nguyên!',
+      '<strong>Bẫy liên hệ thực tiễn:</strong> Trong học tập và quản trị hiện đại, tư duy siêu hình biểu hiện ở bệnh bảo thủ, cứng nhắc, nhìn sự việc phiến diện ("thấy cây mà không thấy rừng"); tư duy biện chứng giúp tư duy hệ thống, thích ứng linh hoạt với biến động kinh tế - công nghệ.'
+    ],
+    traps: [
+      { wrong: 'Mặt thứ nhất của vấn đề cơ bản trả lời câu hỏi con người có nhận thức được thế giới không.', right: 'SAI! Mặt thứ nhất (Bản thể luận) hỏi vật chất hay ý thức có trước/quyết định. Mặt thứ hai (Nhận thức luận) mới hỏi con người có nhận thức được thế giới hay không.' },
+      { wrong: 'Triết học ra đời cùng lúc với sự xuất hiện của loài người (xã hội nguyên thủy).', right: 'SAI! Triết học chỉ ra đời vào khoảng TK VIII–VI TCN khi xã hội chiếm hữu nô lệ xuất hiện sự phân công lao động trí óc và chân tay.' },
+      { wrong: 'Chủ nghĩa duy tâm khách quan cho rằng ý thức con người sinh ra thế giới.', right: 'SAI! Đó là CNDT chủ quan. CNDT khách quan cho rằng một lực lượng tinh thần khách quan tồn tại độc lập bên ngoài con người ("Ý niệm tuyệt đối", "Đạo", "Thượng đế") sinh ra thế giới.' },
+      { wrong: 'Tất cả các nhà duy vật đều theo thuyết khả tri và tất cả các nhà duy tâm đều theo thuyết bất khả tri.', right: 'SAI! Đa số các nhà duy tâm (như Hegel, Plato) vẫn thuộc thuyết khả tri (cho rằng nhận thức được thế giới tinh thần). Chỉ một bộ phận mới theo bất khả tri (Hume, Kant).' }
+    ]
+  },
+  {
+    id: 'c1-2',
+    chapter: 1,
+    code: '1.2',
+    title: 'Triết học Mác - Lênin và Vai trò trong Đời sống Xã hội',
+    subtitle: 'Điều kiện ra đời, các thời kỳ phát triển, bước ngoặt cách mạng, đối tượng, chức năng & vai trò',
+    weight: 'Trọng tâm Trắc nghiệm & Câu hỏi mở',
+    core: [
+      {
+        heading: '1. Điều kiện lịch sử ra đời Triết học Mác (Những năm 40 thế kỷ XIX)',
+        points: [
+          '<strong>Điều kiện kinh tế - xã hội:</strong> Phương thức sản xuất TBCN phát triển mạnh mẽ nhờ Cách mạng công nghiệp; giai cấp vô sản ra đời và bước lên vũ đài lịch sử như một lực lượng chính trị độc lập (Khởi nghĩa công nhân Lyon - Pháp 1831/1834, dệt Siledi - Đức 1844, phong trào Hiến chương - Anh) → đòi hỏi cấp bách một hệ thống lý luận cách mạng soi đường.',
+          '<strong>Tiền đề lý luận trực tiếp:</strong> Kế thừa trực tiếp 3 nguồn gốc của chủ nghĩa Mác, trong đó trực tiếp nhất cho Triết học là <strong>Triết học cổ điển Đức</strong> (phép biện chứng của <em>Hegel</em> + chủ nghĩa duy vật của <em>Feuerbach</em>), đồng thời kết hợp Kinh tế chính trị cổ điển Anh (A. Smith, D. Ricardo) và Chủ nghĩa xã hội không tưởng Pháp (Saint-Simon, Fourier, Owen).',
+          '<strong>Tiền đề khoa học tự nhiên (3 phát minh vĩ đại thế kỷ XIX):</strong> (1) Định luật bảo toàn và chuyển hóa năng lượng (chứng minh vật chất không tự sinh ra/mất đi, các dạng vận động chuyển hóa lẫn nhau); (2) Học thuyết tế bào (chứng minh sự thống nhất nguồn gốc thế giới sống); (3) Học thuyết tiến hóa của Darwin (giải thích sự phát triển của sinh giới bằng quy luật tự nhiên, bác bỏ thần học).',
+          '<strong>Nhân tố chủ quan:</strong> Thiên tài, nghị lực, sự gắn bó với phong trào công nhân và tình bạn vĩ đại giữa C. Mác (1818–1883) và Ph. Ăngghen (1820–1895).'
+        ]
+      },
+      {
+        heading: '2. Các thời kỳ phát triển & Thực chất cuộc cách mạng trong Triết học',
+        points: [
+          '<strong>Thời kỳ Mác & Ăngghen:</strong> (1) 1841–1844: Chuyển biến từ CNDT và dân chủ cách mạng sang CNDV và cộng sản chủ nghĩa; (2) 1844–1848: Đề xuất các nguyên lý CNDV biện chứng và CNDV lịch sử (đỉnh cao là <em>Tuyên ngôn của Đảng Cộng sản</em>, 2/1848); (3) 1848–1895: Bổ sung, phát triển toàn diện (<em>Tư bản</em>, <em>Chống Đuyrinh</em>, <em>Biện chứng của tự nhiên</em>).',
+          '<strong>Thực chất cuộc cách mạng trong triết học của Mác - Ăngghen:</strong> (1) Khắc phục tính trực quan siêu hình của CNDV cũ và tính duy tâm thần bí của phép biện chứng Hegel → sáng tạo CNDV biện chứng; (2) Sáng tạo ra <strong>Chủ nghĩa duy vật lịch sử</strong> (phát kiến vĩ đại nhất, biến CNDV thành triệt để cả trong tự nhiên lẫn xã hội); (3) Thống nhất giữa lý luận và thực tiễn, tính khoa học và tính cách mạng ("Các nhà triết học đã chỉ giải thích thế giới bằng nhiều cách khác nhau, song vấn đề là cải tạo thế giới").',
+          '<strong>Giai đoạn V.I. Lênin (1870–1924):</strong> Phát triển Triết học Mác trong thời đại chủ nghĩa đế quốc và cách mạng vô sản qua 3 chặng: 1893–1907; 1907–1917 (tác phẩm <em>Chủ nghĩa duy vật và chủ nghĩa kinh nghiệm phê phán</em> năm 1909 đưa ra định nghĩa vật chất kinh điển, <em>Bút ký triết học</em>); 1917–1924 (tổng kết thực tiễn xây dựng CNXH).'
+        ]
+      },
+      {
+        heading: '3. Đối tượng, Chức năng và Vai trò của Triết học Mác - Lênin',
+        points: [
+          '<strong>2 Chức năng cơ bản:</strong> (1) <em>Chức năng thế giới quan</em> (đem lại thế giới quan duy vật biện chứng, định hướng nhận thức và hành động, chống mê tín, duy tâm, giáo điều); (2) <em>Chức năng phương pháp luận</em> (hệ thống các quan điểm chỉ đạo việc tìm tòi, lựa chọn và vận dụng phương pháp trong nhận thức và thực tiễn).',
+          '<strong>Vai trò trong đổi mới ở Việt Nam (từ Đại hội VI năm 1986):</strong> Là cơ sở lý luận khoa học cho công cuộc đổi mới tư duy (trước hết là tư duy kinh tế), xây dựng nền kinh tế thị trường định hướng XHCN, chủ động hội nhập quốc tế và giữ vững định hướng XHCN.'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Tại sao nói CNDV lịch sử là bước ngoặt vĩ đại nhất?</strong> Trước Mác, các nhà duy vật (kể cả Feuerbach) chỉ duy vật trong tự nhiên nhưng khi bàn về xã hội lại rơi vào duy tâm ("duy vật nửa vời"). Chỉ đến Mác - Ăngghen mới tìm ra quy luật vận động khách quan của lịch sử xã hội từ sản xuất vật chất.',
+      '<strong>Triết học Mác - Lênin có thay thế các khoa học cụ thể không?</strong> Tuyệt đối KHÔNG! Nó cung cấp thế giới quan và phương pháp luận chung nhất, còn mỗi khoa học cụ thể giải quyết quy luật riêng của lĩnh vực mình. Triết học và khoa học cụ thể tác động qua lại nhau.'
+    ],
+    traps: [
+      { wrong: 'Mác và Ăngghen kế thừa nguyên xi toàn bộ triết học Hegel và Feuerbach.', right: 'SAI! Mác - Ăngghen kế thừa CÓ PHÊ PHÁN: lấy "hạt nhân hợp lý" là phép biện chứng của Hegel (bỏ vỏ duy tâm) và lấy chủ nghĩa duy vật của Feuerbach (bỏ tính siêu hình và duy tâm về lịch sử).' },
+      { wrong: 'Tác phẩm "Chủ nghĩa duy vật và chủ nghĩa kinh nghiệm phê phán" là của C. Mác.', right: 'SAI! Tác phẩm này do V.I. Lênin viết năm 1908 (xuất bản 1909) nhằm chống lại chủ nghĩa Makhơ và khủng hoảng vật lý học cuối TK XIX - đầu TK XX.' }
+    ]
+  },
+
+  // -------------------- CHƯƠNG 2 --------------------
+  {
+    id: 'c2-1',
+    chapter: 2,
+    code: '2.1',
+    title: 'Vật chất và Ý thức',
+    subtitle: 'Định nghĩa vật chất của Lênin, vận động - đứng im, không gian - thời gian, bản chất ý thức & MQH biện chứng',
+    weight: 'CỰC KỲ TRỌNG TÂM (95% có trong đề thi)',
+    core: [
+      {
+        heading: '1. Định nghĩa Vật chất của V.I. Lênin (1909)',
+        quote: '“Vật chất là một phạm trù triết học dùng để chỉ thực tại khách quan được đem lại cho con người trong cảm giác, được cảm giác của chúng ta chép lại, chụp lại, phản ánh, và tồn tại không lệ thuộc vào cảm giác.”',
+        points: [
+          '<strong>Phương pháp định nghĩa đặc biệt:</strong> Không thể định nghĩa vật chất bằng cách quy về khái niệm rộng hơn (vì vật chất là phạm trù rộng nhất), nên Lênin định nghĩa bằng cách <em>đối lập vật chất với ý thức</em> trên phương diện nhận thức luận.',
+          '<strong>3 nội dung cốt lõi:</strong> (1) Vật chất là <em>thực tại khách quan</em> — cái tồn tại hiện thực bên ngoài ý thức và không lệ thuộc vào ý thức (thuộc tính chung nhất, duy nhất để nhận diện vật chất); (2) Vật chất là cái mà khi tác động vào giác quan con người thì đem lại <em>cảm giác</em> (vật chất có trước, ý thức có sau); (3) Vật chất được cảm giác chép lại, chụp lại, phản ánh (khẳng định con người có khả năng nhận thức được thế giới — bác bỏ bất khả tri).',
+          '<strong>Ý nghĩa khoa học & PPL:</strong> Giải quyết triệt để cả 2 mặt vấn đề cơ bản trên lập trường duy vật; khắc phục khủng hoảng vật lý học cuối TK XIX (khi phát hiện tia X 1895, phóng xạ 1896, điện tử 1897 — "vật chất không tiêu tan", chỉ có giới hạn nhận thức cũ bị phá vỡ); mở rộng khái niệm vật chất sang lĩnh vực xã hội (tồn tại xã hội).'
+        ]
+      },
+      {
+        heading: '2. Phương thức & Hình thức tồn tại của Vật chất',
+        points: [
+          '<strong>Vận động là phương thức tồn tại của vật chất:</strong> Là thuộc tính cố hữu (không có vật chất không vận động và không có vận động thuần túy ngoài vật chất). Vận động là <em>tự thân vận động</em>, mang tính tuyệt đối, vĩnh viễn.',
+          '<strong>5 hình thức vận động cơ bản (Ăngghen phân loại từ thấp đến cao):</strong> Cơ học → Vật lý → Hóa học → Sinh học → Xã hội. Hình thức cao bao hàm hình thức thấp nhưng không thể quy giản hình thức cao về hình thức thấp.',
+          '<strong>Đứng im:</strong> Là trạng thái ổn định về chất của sự vật trong những mối quan hệ và điều kiện cụ thể. <em>Vận động là tuyệt đối, đứng im là tương đối, tạm thời</em> (thực chất là một dạng đặc biệt của vận động — vận động trong thế cân bằng).',
+          '<strong>Không gian và Thời gian:</strong> Là <em>hình thức tồn tại</em> của vật chất, gắn liền với vật chất vận động. Không gian có 3 chiều (dài, rộng, cao), thời gian có 1 chiều (quá khứ → hiện tại → tương lai). Tính chất: khách quan, vĩnh cửu, vô tận (nhưng ở từng vật thể cụ thể thì hữu hạn).',
+          '<strong>Tính thống nhất vật chất của thế giới:</strong> Chỉ có một thế giới duy nhất và thống nhất là thế giới vật chất; thế giới vật chất tồn tại khách quan, vĩnh viễn, vô hạn, không do ai sinh ra và không tự mất đi.'
+        ]
+      },
+      {
+        heading: '3. Nguồn gốc, Bản chất và Kết cấu của Ý thức',
+        points: [
+          '<strong>Nguồn gốc tự nhiên (Điều kiện cần):</strong> Bộ óc người (dạng vật chất có tổ chức cao nhất) + Thế giới khách quan tác động lên bộ óc tạo ra sự <em>phản ánh</em> (ý thức là hình thức phản ánh cao nhất — phản ánh năng động, sáng tạo).',
+          '<strong>Nguồn gốc xã hội (Điều kiện ĐỦ, QUYẾT ĐỊNH trực tiếp):</strong> <strong>Lao động</strong> (hoàn thiện bàn tay, bộ óc, làm bộc lộ thuộc tính sự vật) và <strong>Ngôn ngữ</strong> ("vỏ vật chất của tư duy", công cụ giao tiếp và khái quát hóa).',
+          '<strong>Bản chất của ý thức:</strong> Là <em>hình ảnh chủ quan của thế giới khách quan</em> (nội dung mang tính khách quan, hình thức biểu hiện mang tính chủ quan); là quá trình phản ánh tích cực, tự giác, năng động, sáng tạo; mang bản chất lịch sử - xã hội.',
+          '<strong>Kết cấu của ý thức:</strong> Theo chiều ngang (lớp cấu trúc): <strong>Tri thức</strong> (cốt lõi, phương thức tồn tại), Tình cảm, Niềm tin, Ý chí. Theo chiều dọc (cấp độ): Tự ý thức, Tiềm thức, Vô thức.',
+          '<strong>Vấn đề Trí tuệ nhân tạo (AI):</strong> Máy móc/AI chỉ là hệ thống vật lý thực hiện thao tác kỹ thuật mô phỏng tư duy do con người lập trình; AI KHÔNG có ý thức xã hội, cảm xúc sinh học và mục đích tự thân như con người.'
+        ]
+      },
+      {
+        heading: '4. Mối quan hệ biện chứng Vật chất – Ý thức & Ý nghĩa Phương pháp luận',
+        points: [
+          '<strong>Vật chất quyết định ý thức (4 phương diện):</strong> (1) Quyết định <em>nguồn gốc</em> của ý thức; (2) Quyết định <em>nội dung</em> của ý thức; (3) Quyết định <em>bản chất</em> của ý thức; (4) Quyết định <em>sự vận động, phát triển</em> của ý thức.',
+          '<strong>Ý thức có tính độc lập tương đối và tác động trở lại vật chất:</strong> Ý thức không thụ động mà có thể thay đổi nhanh/chậm hơn vật chất; tác động trở lại vật chất <strong>thông qua hoạt động thực tiễn của con người</strong> theo 2 chiều: <em>tích cực</em> (nếu phản ánh đúng quy luật khách quan → thúc đẩy) hoặc <em>tiêu cực</em> (nếu sai lầm, duy ý chí → kìm hãm).',
+          '<strong>Ý nghĩa phương pháp luận (Nguyên tắc tối thượng):</strong> Phải <strong>tôn trọng tính khách quan</strong> (xuất phát từ thực tế khách quan, tôn trọng quy luật khách quan) kết hợp với <strong>phát huy tính năng động chủ quan</strong> (phát huy vai trò tri thức, ý chí, sáng tạo). Chống 2 thái cực sai lầm: <em>Bệnh chủ quan duy ý chí</em> (nóng vội, bất chấp quy luật) và <em>Bệnh thụ động, ỷ lại, bảo thủ</em>.'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Mẹo ăn điểm tuyệt đối câu "Ý thức tác động trở lại vật chất":</strong> Luôn phải nhấn mạnh cụm từ <strong>"phải thông qua hoạt động thực tiễn của con người"</strong>. Tự bản thân ý thức (suy nghĩ trong đầu) không thể trực tiếp làm dịch chuyển dù chỉ một hạt cát!',
+      '<strong>Liên hệ thực tiễn Việt Nam:</strong> Trước Đổi mới 1986, ta từng mắc bệnh chủ quan duy ý chí (duy trì cơ chế bao cấp quá lâu, nóng vội cải tạo XHCN bất chấp trình độ LLSX thấp). Từ Đại hội VI (1986), Đảng xác định nguyên tắc <em>"nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật"</em> — biểu hiện mẫu mực của tôn trọng khách quan kết hợp phát huy năng động chủ quan.',
+      '<strong>Liên hệ sinh viên:</strong> Lập kế hoạch học tập phải căn cứ năng lực, thời gian, điều kiện thực tế (khách quan), đồng thời chủ động sáng tạo phương pháp học, rèn ý chí vượt khó (năng động chủ quan).'
+    ],
+    traps: [
+      { wrong: 'Đồng nhất "vật chất" với "vật thể" (cái gì sờ thấy, cân đo được mới là vật chất).', right: 'SAI! Các quan hệ sản xuất, từ trường, sóng điện từ, ánh sáng đều là vật chất vì chúng tồn tại khách quan, độc lập với ý thức.' },
+      { wrong: 'Nguồn gốc quyết định trực tiếp sự ra đời của ý thức là bộ óc người (nguồn gốc tự nhiên).', right: 'SAI! Bộ óc người chỉ là điều kiện CẦN (nguồn gốc tự nhiên). Nguồn gốc XÃ HỘI (lao động và ngôn ngữ) mới là yếu tố QUYẾT ĐỊNH trực tiếp.' },
+      { wrong: 'Đứng im là tuyệt đối, vận động là tương đối; hoặc đứng im nghĩa là hoàn toàn không vận động.', right: 'SAI! Vận động là tuyệt đối, đứng im là tương đối, tạm thời và chỉ diễn ra trong một hình thức vận động hoặc một quan hệ nhất định.' },
+      { wrong: 'Trong kết cấu ý thức, yếu tố quan trọng nhất là tình cảm hoặc ý chí.', right: 'SAI! TRI THỨC mới là yếu tố cốt lõi, giữ vai trò quan trọng nhất, là phương thức tồn tại của ý thức.' }
+    ]
+  },
+  {
+    id: 'c2-2',
+    chapter: 2,
+    code: '2.2',
+    title: 'Phép biện chứng duy vật (2 Nguyên lý, 6 Cặp phạm trù, 3 Quy luật)',
+    subtitle: 'Linh hồn của Chương 2: Hệ thống toàn bộ nguyên lý, phạm trù và 3 quy luật cơ bản của phép biện chứng',
+    weight: 'TRỌNG TÂM LỚN NHẤT MÔN HỌC',
+    core: [
+      {
+        heading: 'A. HAI NGUYÊN LÝ CƠ BẢN',
+        table: {
+          headers: ['Nguyên lý', 'Nội dung & Tính chất', 'Ý nghĩa Phương pháp luận'],
+          rows: [
+            ['1. Nguyên lý về mối liên hệ phổ biến', 'Mọi sự vật, hiện tượng trong thế giới đều tồn tại trong mối liên hệ qua lại, quy định, chuyển hóa lẫn nhau, không có gì cô lập.<br><strong>3 tính chất:</strong> Khách quan, Phổ biến, Đa dạng phong phú.', '<strong>Quan điểm toàn diện</strong> (xem xét mọi mặt, nhưng phải có trọng tâm trọng điểm, chống phiến diện và chống chiết trung/ngụy biện) + <strong>Quan điểm lịch sử - cụ thể</strong> (gắn với không gian, thời gian cụ thể).'],
+            ['2. Nguyên lý về sự phát triển', 'Phát triển là quá trình vận động từ thấp đến cao, kém hoàn thiện đến hoàn thiện hơn (theo đường <em>xoáy ốc</em>, có bước quanh co, thụt lùi tạm thời).<br><strong>4 tính chất:</strong> Khách quan, Phổ biến, Kế thừa, Đa dạng phong phú.', '<strong>Quan điểm phát triển</strong> (nhìn sự vật trong xu hướng đi lên, biết phát hiện và ủng hộ cái mới, kiên trì vượt qua quanh co; chống bảo thủ, định kiến, trì trệ) + kết hợp lịch sử - cụ thể.']
+          ]
+        }
+      },
+      {
+        heading: 'B. SÁU CẶP PHẠM TRÙ CƠ BẢN',
+        table: {
+          headers: ['Cặp phạm trù', 'Mối quan hệ biện chứng cốt lõi', 'Ý nghĩa Phương pháp luận & Lưu ý'],
+          rows: [
+            ['1. Cái riêng – Cái chung (và Cái đơn nhất)', 'Cái chung chỉ tồn tại <em>trong</em> cái riêng, thông qua cái riêng mà biểu hiện. Cái riêng phong phú hơn cái chung; cái chung sâu sắc hơn cái riêng. Cái đơn nhất và cái chung có thể chuyển hóa cho nhau.', 'Không tuyệt đối hóa cái chung (giáo điều) hay cái riêng (kinh nghiệm chủ nghĩa). Tạo điều kiện để cái đơn nhất tích cực trở thành cái chung.'],
+            ['2. Nguyên nhân – Kết quả', 'Nguyên nhân sinh ra kết quả (luôn có trước về thời gian). Một nguyên nhân có thể sinh nhiều kết quả và ngược lại. Kết quả tác động trở lại nguyên nhân. Có thể chuyển hóa trong chuỗi nhân - quả.', 'Muốn loại bỏ kết quả xấu phải diệt tận gốc nguyên nhân. <strong>Chú ý:</strong> Nguyên nhân khác <em>Nguyên cớ</em> (chỉ là bề ngoài) và khác <em>Điều kiện</em> (môi trường hỗ trợ).'],
+            ['3. Tất nhiên – Ngẫu nhiên', 'Tất nhiên do nguyên nhân bên trong quyết định, vạch đường đi qua vô số cái ngẫu nhiên; ngẫu nhiên là hình thức biểu hiện và bổ sung cho tất nhiên. Có thể chuyển hóa khi đổi quan hệ.', 'Hoạt động thực tiễn phải dựa vào cái tất nhiên, nhưng KHÔNG bỏ qua cái ngẫu nhiên (luôn có phương án dự phòng).'],
+            ['4. Nội dung – Hình thức', 'Thống nhất chặt chẽ. <strong>Nội dung quyết định hình thức</strong> (nội dung biến đổi trước, hình thức biến đổi chậm hơn). Hình thức tác động trở lại nội dung (thúc đẩy nếu phù hợp, kìm hãm nếu lạc hậu).', 'Chống chủ nghĩa hình thức. Khi nội dung đã đổi mới, phải chủ động thay đổi hình thức cũ cho phù hợp.'],
+            ['5. Bản chất – Hiện tượng', 'Bản chất là cái bên trong, tương đối ổn định; hiện tượng là biểu hiện bên ngoài, thường xuyên biến đổi. Bản chất bộc lộ qua hiện tượng (kể cả hiện tượng giả tạo — "giả tượng").', 'Không dừng ở hiện tượng bề ngoài mà phải đi sâu nắm bản chất thông qua nhiều hiện tượng khác nhau.'],
+            ['6. Khả năng – Hiện thực', 'Hiện thực là cái đang tồn tại thực sự; khả năng là cái hiện chưa có nhưng sẽ có khi đủ điều kiện. Trong một sự vật có nhiều khả năng (tất nhiên/ngẫu nhiên, gần/xa).', 'Dựa vào hiện thực để định hướng, đồng thời tính đến mọi khả năng và tạo điều kiện biến khả năng tốt thành hiện thực.']
+          ]
+        }
+      },
+      {
+        heading: 'C. BA QUY LUẬT CƠ BẢN CỦA PHÉP BIỆN CHỨNG DUY VẬT',
+        table: {
+          headers: ['Quy luật & Vị trí', 'Cơ chế vận động cốt lõi', 'Ý nghĩa Phương pháp luận'],
+          rows: [
+            ['1. Quy luật Lượng – Chất<br><em>(Chỉ ra CÁCH THỨC của sự phát triển)</em>', 'Sự vật thống nhất giữa <strong>Chất</strong> (tính quy định khách quan vốn có làm nó là nó) và <strong>Lượng</strong> (quy mô, trình độ, tốc độ). Lượng đổi dần trong giới hạn <strong>Độ</strong> → đạt <strong>Điểm nút</strong> → thực hiện <strong>Bước nhảy</strong> làm Chất mới ra đời → Chất mới lại quy định Lượng mới.', 'Tích lũy đủ về lượng mới đổi về chất. <strong>Chống 2 bệnh:</strong> <em>Tả khuynh</em> (nóng vội, đốt cháy giai đoạn khi chưa đủ lượng) và <em>Hữu khuynh</em> (bảo thủ, trì trệ, không dám thực hiện bước nhảy khi lượng đã chín muồi).'],
+            ['2. Quy luật Mâu thuẫn (Thống nhất & đấu tranh của các mặt đối lập)<br><em>(HẠT NHÂN — Chỉ ra NGUỒN GỐC, ĐỘNG LỰC)</em>', 'Mọi sự vật đều chứa các mặt đối lập vừa <strong>thống nhất</strong> (nương tựa, ràng buộc — tương đối), vừa <strong>đấu tranh</strong> (bài trừ, phủ định nhau — tuyệt đối). Đấu tranh lên đỉnh điểm → mâu thuẫn được giải quyết → cái cũ mất, cái mới ra đời.', 'Tôn trọng mâu thuẫn khách quan, phân tích đúng loại mâu thuẫn (cơ bản/không cơ bản, chủ yếu/thứ yếu, đối kháng/không đối kháng) để giải quyết bằng đấu tranh chứ không điều hòa mâu thuẫn.'],
+            ['3. Quy luật Phủ định của phủ định<br><em>(Chỉ ra KHUYNH HƯỚNG của sự phát triển)</em>', '<strong>Phủ định biện chứng</strong> có 2 đặc trưng: <em>tính khách quan</em> (tự thân phủ định) và <em>tính kế thừa</em> (giữ lại nhân tố tích cực, lọc bỏ tiêu cực). Qua ít nhất 2 lần phủ định, sự vật dường như quay lại điểm xuất phát nhưng ở trình độ cao hơn theo <strong>đường xoáy ốc</strong>.', 'Tin vào tất thắng của cái mới nhưng không ảo tưởng phát triển thẳng tắp. Biết kế thừa có chọn lọc, chống <em>phủ định sạch trơn</em> (cực đoan) và chống <em>kế thừa nguyên xi</em> (bảo thủ).']
+          ]
+        }
+      }
+    ],
+    advanced: [
+      '<strong>Hệ thống hóa vị trí 3 quy luật trong 1 câu thần chú đi thi:</strong> <em>Lượng-Chất = CÁCH THỨC; Mâu thuẫn = NGUỒN GỐC & ĐỘNG LỰC (Hạt nhân); Phủ định của phủ định = KHUYNH HƯỚNG (Đường xoáy ốc).</em>',
+      '<strong>Phân biệt "Phát triển" và "Vận động":</strong> Mọi sự phát triển đều là vận động, nhưng KHÔNG phải mọi vận động đều là phát triển (vận động bao gồm cả đi lên, đi xuống, tuần hoàn; phát triển chỉ là khuynh hướng vận động đi lên).',
+      '<strong>Chiết trung vs. Toàn diện:</strong> Toàn diện là xem xét các mặt có trọng tâm, liên hệ hữu cơ. Chiết trung là lắp ghép vô nguyên tắc các mặt đối lập lại với nhau mà không thấy mặt quyết định. Ngụy biện là cố tình đánh tráo mặt thứ yếu thành chủ yếu.'
+    ],
+    traps: [
+      { wrong: 'Cái chung lớn hơn, phong phú hơn cái riêng.', right: 'SAI NGƯỢC! Cái riêng = Cái chung + Cái đơn nhất → nên CÁI RIÊNG phong phú hơn cái chung, còn CÁI CHUNG sâu sắc hơn cái riêng.' },
+      { wrong: 'Mọi sự thay đổi về lượng đều lập tức dẫn đến sự thay đổi về chất.', right: 'SAI! Trong giới hạn của ĐỘ, lượng đổi nhưng chất CHƯA đổi căn bản. Chỉ khi tích lũy vượt qua ĐIỂM NÚT và thực hiện BƯỚC NHẢY thì chất mới thay đổi.' },
+      { wrong: 'Sự thống nhất của các mặt đối lập là tuyệt đối, còn đấu tranh là tương đối.', right: 'SAI NGƯỢC! Theo V.I. Lênin: Đấu tranh của các mặt đối lập là TUYỆT ĐỐI (gắn với vận động tuyệt đối), còn thống nhất là TƯƠNG ĐỐI, tạm thời (gắn với đứng im tương đối).' },
+      { wrong: 'Sự kiện A xảy ra trước sự kiện B thì chắc chắn A là nguyên nhân của B.', right: 'SAI! Nguyên nhân luôn có trước kết quả về thời gian, nhưng không phải cứ có trước là nguyên nhân (ví dụ: ngày đến trước đêm nhưng ngày không sinh ra đêm; chớp trước sấm nhưng chớp không sinh ra sấm).' },
+      { wrong: 'Phủ định biện chứng là xóa bỏ hoàn toàn cái cũ để xây cái mới từ con số 0.', right: 'SAI! Đó là phủ định siêu hình (phủ định sạch trơn). Phủ định biện chứng mang tính TỰ THÂN và KẾ THỪA có chọn lọc.' }
+    ]
+  },
+  {
+    id: 'c2-3',
+    chapter: 2,
+    code: '2.3',
+    title: 'Lý luận Nhận thức Duy vật Biện chứng',
+    subtitle: 'Bản chất nhận thức, thực tiễn và 4 vai trò của thực tiễn, 2 giai đoạn nhận thức & 4 tính chất chân lý',
+    weight: 'Hay ra cả Trắc nghiệm & Tự luận',
+    core: [
+      {
+        heading: '1. Bản chất của Nhận thức',
+        points: [
+          '<strong>4 nguyên tắc cốt lõi của lý luận nhận thức DVBC:</strong> (1) Thừa nhận thế giới vật chất tồn tại khách quan; (2) Công nhận cảm giác, tư duy là hình ảnh chủ quan của thế giới khách quan; (3) Lấy <strong>thực tiễn</strong> làm tiêu chuẩn kiểm tra hình ảnh đúng/sai; (4) Nhận thức là quá trình phản ánh tích cực, tự giác, sáng tạo thế giới khách quan vào bộ óc người trên cơ sở thực tiễn.'
+        ]
+      },
+      {
+        heading: '2. Thực tiễn và Vai trò của Thực tiễn đối với Nhận thức',
+        points: [
+          '<strong>Khái niệm Thực tiễn:</strong> Là toàn bộ hoạt động <em>vật chất - cảm tính</em>, có tính lịch sử - xã hội của con người nhằm cải tạo tự nhiên và xã hội phục vụ nhân loại tiến bộ.',
+          '<strong>3 hình thức cơ bản của thực tiễn:</strong> (1) <em>Hoạt động sản xuất vật chất</em> (quan trọng nhất, cơ bản nhất, quyết định các hình thức khác); (2) <em>Hoạt động chính trị - xã hội</em> (hình thức cao nhất về mặt tổ chức xã hội); (3) <em>Hoạt động thực nghiệm khoa học</em> (đặc biệt quan trọng trong thời đại khoa học công nghệ).',
+          '<strong>Vai trò của thực tiễn đối với nhận thức (4 vai trò kinh điển):</strong> (1) Là <strong>cơ sở, nguồn gốc</strong> của nhận thức; (2) Là <strong>động lực</strong> của nhận thức (đặt ra nhu cầu, nhiệm vụ và tạo công cụ nhận thức); (3) Là <strong>mục đích</strong> của nhận thức (nhận thức để quay lại cải tạo thực tiễn); (4) Là <strong>tiêu chuẩn duy nhất</strong> để kiểm tra chân lý (tiêu chuẩn này vừa có tính tuyệt đối vừa có tính tương đối).',
+          '<strong>Ý nghĩa phương pháp luận:</strong> Quán triệt <strong>Quan điểm thực tiễn</strong>: lý luận phải gắn liền với thực tiễn ("Học đi đôi với hành"); chống <em>bệnh giáo điều</em> (tuyệt đối hóa lý luận sách vở) và chống <em>bệnh kinh nghiệm chủ nghĩa</em> (coi thường lý luận).'
+        ]
+      },
+      {
+        heading: '3. Con đường biện chứng của sự nhận thức chân lý (V.I. Lênin)',
+        quote: '“Từ trực quan sinh động đến tư duy trừu tượng, và từ tư duy trừu tượng đến thực tiễn — đó là con đường biện chứng của sự nhận thức chân lý, của sự nhận thức thực tại khách quan.”',
+        table: {
+          headers: ['Giai đoạn', '3 hình thức cơ bản', 'Đặc điểm & Hạn chế'],
+          rows: [
+            ['Giai đoạn 1: Nhận thức cảm tính (Trực quan sinh động)', '1. <strong>Cảm giác</strong> (phản ánh thuộc tính riêng lẻ)<br>2. <strong>Tri giác</strong> (tổng hợp nhiều cảm giác thành hình ảnh trọn vẹn)<br>3. <strong>Biểu tượng</strong> (hình ảnh lưu giữ tái hiện trong óc khi sự vật không còn trước mắt — khâu trung gian sang lý tính)', 'Trực tiếp, sinh động, phong phú; NHƯNG mới chỉ phản ánh bề ngoài, chưa nắm được bản chất, quy luật bên trong.'],
+            ['Giai đoạn 2: Nhận thức lý tính (Tư duy trừu tượng)', '1. <strong>Khái niệm</strong> (phản ánh thuộc tính chung, bản chất)<br>2. <strong>Phán đoán</strong> (liên kết khái niệm để khẳng định/phủ định)<br>3. <strong>Suy luận / Suy lý</strong> (rút ra tri thức mới từ các phán đoán tiền đề)', 'Gián tiếp, khái quát, nắm bắt được bản chất và quy luật; NHƯNG có nguy cơ xa rời hiện thực nên PHẢI quay về thực tiễn kiểm nghiệm.']
+          ]
+        }
+      },
+      {
+        heading: '4. Chân lý và Các tính chất của Chân lý',
+        points: [
+          '<strong>Khái niệm:</strong> Chân lý là tri thức <em>phù hợp với hiện thực khách quan</em> và được <em>thực tiễn kiểm nghiệm</em>.',
+          '<strong>4 tính chất của chân lý:</strong> (1) <em>Tính khách quan</em> (nội dung chân lý phụ thuộc khách quan, không phụ thuộc ý muốn chủ quan); (2) <em>Tính tương đối</em> (đúng nhưng chưa đầy đủ, còn phát triển thêm); (3) <em>Tính tuyệt đối</em> (đúng hoàn toàn, đầy đủ trong giới hạn xác định); (4) <em>Tính cụ thể</em> ("Không có chân lý trừu tượng, chân lý luôn luôn là cụ thể" — luôn gắn với điều kiện không gian, thời gian xác định).'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Mối quan hệ giữa Chân lý tương đối và Chân lý tuyệt đối:</strong> Chúng không tách rời nhau. Chân lý tuyệt đối là tổng số vô hạn của các chân lý tương đối đang phát triển; mỗi chân lý tương đối đều chứa đựng hạt nhân của chân lý tuyệt đối.',
+      '<strong>Phân biệt "Hoạt động thực tiễn" và "Hoạt động nhận thức":</strong> Thực tiễn là hoạt động <em>vật chất - cảm tính</em> cải biến thế giới bên ngoài; đọc sách, suy nghĩ, làm toán trên giấy là hoạt động tinh thần/nhận thức, KHÔNG phải thực tiễn.'
+    ],
+    traps: [
+      { wrong: 'Mọi hoạt động của con người (kể cả suy nghĩ, đọc sách, cầu nguyện) đều là hoạt động thực tiễn.', right: 'SAI! Thực tiễn chỉ là những hoạt động VẬT CHẤT - CẢM TÍNH cải tạo tự nhiên và xã hội.' },
+      { wrong: 'Trong 3 hình thức của thực tiễn, thực nghiệm khoa học là hình thức cơ bản nhất.', right: 'SAI! SẢN XUẤT VẬT CHẤT mới là hình thức cơ bản, đầu tiên và quan trọng nhất của thực tiễn.' },
+      { wrong: 'Biểu tượng thuộc giai đoạn nhận thức lý tính.', right: 'SAI! Biểu tượng là hình thức CAO NHẤT của nhận thức CẢM TÍNH (là bước đệm chuyển sang lý tính, nhưng vẫn thuộc cảm tính).' },
+      { wrong: 'Chân lý có tính chủ quan vì do con người nhận thức ra.', right: 'SAI! Hình thức diễn đạt là của con người nhưng NỘI DUNG của chân lý mang tính KHÁCH QUAN tuyệt đối.' }
+    ]
+  },
+
+  // -------------------- CHƯƠNG 3 --------------------
+  {
+    id: 'c3-1',
+    chapter: 3,
+    code: '3.1',
+    title: 'Học thuyết Hình thái Kinh tế - Xã hội',
+    subtitle: 'Sản xuất vật chất, Quy luật QHSX phù hợp LLSX, Biện chứng CSHT - KTTT, Quá trình lịch sử - tự nhiên',
+    weight: 'SIÊU TRỌNG TÂM CHƯƠNG 3 (Hay ra Tự luận nhất)',
+    core: [
+      {
+        heading: '1. Sản xuất vật chất — Cơ sở của sự tồn tại và phát triển xã hội',
+        points: [
+          '<strong>Sản xuất xã hội</strong> gồm 3 phương diện: Sản xuất vật chất, Sản xuất tinh thần, và Sản xuất ra bản thân con người. Trong đó <strong>Sản xuất vật chất</strong> giữ vai trò nền tảng, quyết định sự tồn tại và phát triển của xã hội.',
+          '<strong>Phương thức sản xuất (PTSX):</strong> Là cách thức con người tiến hành sản xuất vật chất trong từng giai đoạn lịch sử nhất định, là sự thống nhất biện chứng giữa <strong>Lực lượng sản xuất (LLSX)</strong> (mặt kỹ thuật - tự nhiên) và <strong>Quan hệ sản xuất (QHSX)</strong> (mặt kinh tế - xã hội).'
+        ]
+      },
+      {
+        heading: '2. Quy luật QHSX phù hợp với trình độ phát triển của LLSX (Quy luật cơ bản nhất của sự phát triển xã hội)',
+        points: [
+          '<strong>Cấu trúc Lực lượng sản xuất (LLSX):</strong> Gồm (1) <em>Người lao động</em> (yếu tố QUYẾT ĐỊNH hàng đầu — thể lực, trí lực, kỹ năng) và (2) <em>Tư liệu sản xuất</em> = Đối tượng lao động + Tư liệu lao động (trong đó <strong>Công cụ lao động</strong> là yếu tố ĐỘNG NHẤT, CÁCH MẠNG NHẤT, thước đo trình độ chinh phục tự nhiên). Ngày nay, <strong>Khoa học - công nghệ</strong> đã trở thành LLSX trực tiếp.',
+          '<strong>Cấu trúc Quan hệ sản xuất (QHSX) — 3 mặt:</strong> (1) Quan hệ <em>sở hữu về tư liệu sản xuất</em> (GIỮ VAI TRÒ QUYẾT ĐỊNH); (2) Quan hệ tổ chức, quản lý sản xuất; (3) Quan hệ phân phối sản phẩm lao động.',
+          '<strong>Biện chứng LLSX – QHSX:</strong> (a) <strong>LLSX quyết định QHSX</strong> (LLSX là nội dung, luôn biến đổi nhanh; QHSX là hình thức, tương đối ổn định; LLSX thế nào thì QHSX thế ấy; khi LLSX phát triển vượt qua QHSX cũ sẽ tất yếu đòi hỏi xóa bỏ QHSX cũ thay bằng QHSX mới); (b) <strong>QHSX tác động trở lại LLSX</strong> theo 2 hướng: <em>thúc đẩy</em> nếu phù hợp, hoặc <em>kìm hãm</em> nếu không phù hợp (cả khi QHSX lạc hậu hơn HOẶC "vượt trước" giả tạo so với trình độ LLSX).'
+        ]
+      },
+      {
+        heading: '3. Biện chứng giữa Cơ sở hạ tầng (CSHT) và Kiến trúc thượng tầng (KTTT)',
+        points: [
+          '<strong>Khái niệm Cơ sở hạ tầng (CSHT):</strong> Là toàn bộ những <em>quan hệ sản xuất</em> hợp thành cơ cấu kinh tế của một xã hội nhất định (gồm: QHSX thống trị [quyết định bản chất CSHT], QHSX tàn dư và QHSX mầm mống).',
+          '<strong>Khái niệm Kiến trúc thượng tầng (KTTT):</strong> Là toàn bộ hệ thống kết cấu các hình thái ý thức xã hội (chính trị, pháp quyền, đạo đức, tôn giáo, nghệ thuật, triết học...) cùng với các thiết chế chính trị - xã hội tương ứng (<strong>Nhà nước</strong>, đảng phái, giáo hội, đoàn thể...) được hình thành trên một CSHT nhất định. Trong xã hội có giai cấp, <strong>Nhà nước</strong> là bộ phận có quyền lực mạnh mẽ nhất trong KTTT.',
+          '<strong>Biện chứng CSHT – KTTT:</strong> (a) <strong>CSHT quyết định KTTT</strong> (quyết định nguồn gốc, cơ cấu, tính chất và sự biến đổi của KTTT — thực chất là Kinh tế quyết định Chính trị); (b) <strong>KTTT tác động trở lại CSHT</strong> (bảo vệ, củng cố CSHT sinh ra nó; thúc đẩy kinh tế nếu tác động cùng chiều quy luật khách quan, kìm hãm nếu ngược chiều).'
+        ]
+      },
+      {
+        heading: '4. Sự phát triển các Hình thái KT-XH là một quá trình lịch sử - tự nhiên',
+        points: [
+          '<strong>Cấu trúc Hình thái kinh tế - xã hội (HTKT-XH):</strong> Gồm 3 yếu tố cơ bản: LLSX (nền tảng vật chất - kỹ thuật) + QHSX / CSHT (bộ khung kinh tế) + KTTT (đời sống chính trị - tinh thần).',
+          '<strong>5 HTKT-XH trong lịch sử:</strong> Cộng sản nguyên thủy → Chiếm hữu nô lệ → Phong kiến → Tư bản chủ nghĩa → Cộng sản chủ nghĩa.',
+          '<strong>Vì sao là quá trình "lịch sử - tự nhiên"?</strong> Vì tuân theo các quy luật khách quan (cốt lõi là QHSX phù hợp LLSX và CSHT - KTTT), không phụ thuộc ý muốn chủ quan; tuy nhiên do điều kiện đặc thù mỗi dân tộc, có quốc gia phát triển tuần tự và có quốc gia <strong>"bỏ qua"</strong> một hoặc vài HTKT-XH (như Việt Nam quá độ lên CNXH bỏ qua chế độ TBCN — tức bỏ qua việc xác lập vị trí thống trị của QHSX và KTTT TBCN, nhưng <em>tiếp thu, kế thừa</em> thành tựu KHCN và quản lý mà nhân loại đạt được dưới CNTB).'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Liên hệ Việt Nam Đổi mới (ăn trọn điểm tự luận):</strong> Ở Việt Nam hiện nay, LLSX còn nhiều trình độ khác nhau → phải xây dựng nền kinh tế nhiều thành phần, đa dạng hình thức sở hữu (QHSX phù hợp LLSX). Đồng thời đổi mới kinh tế (CSHT) làm trọng tâm đi đôi với đổi mới hệ thống chính trị (KTTT) từng bước vững chắc, xây dựng Nhà nước pháp quyền XHCN.',
+      '<strong>Hiểu đúng "Bỏ qua chế độ TBCN" ở Việt Nam (Đại hội IX):</strong> Không phải bỏ qua sạch trơn mọi thứ của CNTB mà là bỏ qua địa vị thống trị của QHSX và KTTT TBCN, đồng thời kế thừa tối đa thành tựu LLSX, khoa học - công nghệ và văn minh quản lý.'
+    ],
+    traps: [
+      { wrong: 'Cơ sở hạ tầng (CSHT) là đường sá, cầu cống, điện, trường học, bệnh viện, viễn thông.', right: 'BẪY KINH ĐIỂN SỐ 1! Đường sá, cầu cống là KẾT CẤU HẠ TẦNG kỹ thuật (thuộc LLSX). Trong Triết học Mác - Lênin, CSHT là TỔNG HỢP CÁC QUAN HỆ SẢN XUẤT hợp thành cơ cấu kinh tế của xã hội!' },
+      { wrong: 'Trong LLSX, công cụ lao động là yếu tố giữ vai trò quyết định hàng đầu.', right: 'CẨN THẬN TỪ KHÓA! NGƯỜI LAO ĐỘNG mới là yếu tố giữ vai trò QUYẾT ĐỊNH hàng đầu. CÔNG CỤ LAO ĐỘNG là yếu tố ĐỘNG NHẤT, CÁCH MẠNG NHẤT.' },
+      { wrong: 'QHSX chỉ kìm hãm LLSX khi QHSX lạc hậu hơn LLSX.', right: 'SAI! QHSX kìm hãm LLSX trong CẢ HAI trường hợp: (1) QHSX lạc hậu hơn LLSX, HOẶC (2) QHSX bị đẩy lên "vượt trước" giả tạo, duy ý chí so với trình độ thực tế của LLSX (như tập thể hóa ồ ạt trước 1986).' },
+      { wrong: 'Mọi yếu tố của KTTT đều biến đổi ngay lập tức khi CSHT thay đổi.', right: 'SAI! Một số bộ phận (chính trị, pháp luật, nhà nước) biến đổi nhanh, còn một số bộ phận (tôn giáo, đạo đức, nghệ thuật) biến đổi rất chậm.' }
+    ]
+  },
+  {
+    id: 'c3-2',
+    chapter: 3,
+    code: '3.2',
+    title: 'Giai cấp và Dân tộc',
+    subtitle: 'Định nghĩa giai cấp của Lênin, nguồn gốc, đấu tranh giai cấp, đặc trưng dân tộc & quan hệ giai cấp - dân tộc - nhân loại',
+    weight: 'Trọng tâm Trắc nghiệm & So sánh',
+    core: [
+      {
+        heading: '1. Giai cấp và Đấu tranh giai cấp',
+        points: [
+          '<strong>Định nghĩa giai cấp của V.I. Lênin:</strong> Là những tập đoàn to lớn gồm những người khác nhau về: (1) Địa vị trong hệ thống sản xuất xã hội nhất định; (2) Quan hệ đối với tư liệu sản xuất (<strong>đặc trưng QUAN TRỌNG NHẤT, quy định các đặc trưng khác</strong>); (3) Vai trò trong tổ chức lao động xã hội; (4) Cách thức hưởng thụ và phần của cải xã hội ít hay nhiều. Thực chất giai cấp là tập đoàn này có thể chiếm đoạt lao động của tập đoàn khác do khác nhau về địa vị kinh tế.',
+          '<strong>Nguồn gốc giai cấp:</strong> <em>Nguyên nhân sâu xa</em> là sự phát triển của LLSX tạo ra sản phẩm dư thừa; <em>Nguyên nhân trực tiếp</em> là sự xuất hiện <strong>chế độ tư hữu về tư liệu sản xuất</strong>.',
+          '<strong>Đấu tranh giai cấp:</strong> Thực chất là cuộc đấu tranh giữa giai cấp bị áp bức, bóc lột chống lại giai cấp thống trị, bóc lột do đối lập căn bản về lợi ích kinh tế. Trong xã hội có giai cấp đối kháng, đấu tranh giai cấp là <strong>động lực trực tiếp, quan trọng</strong> của lịch sử. Đỉnh cao của đấu tranh giai cấp là <strong>cách mạng xã hội</strong>.',
+          '<strong>3 hình thức đấu tranh của giai cấp vô sản:</strong> Đấu tranh kinh tế, Đấu tranh chính trị (cao nhất, có ý nghĩa quyết định), Đấu tranh tư tưởng.'
+        ]
+      },
+      {
+        heading: '2. Dân tộc và Mối quan hệ Giai cấp – Dân tộc – Nhân loại',
+        points: [
+          '<strong>Các hình thức cộng đồng người trước dân tộc:</strong> Thị tộc → Bộ lạc → Bộ tộc → Dân tộc (hình thức phát triển cao nhất).',
+          '<strong>5 đặc trưng cơ bản của Dân tộc:</strong> (1) Cộng đồng ổn định trên một lãnh thổ thống nhất; (2) Cộng đồng thống nhất về ngôn ngữ; (3) Cộng đồng thống nhất về kinh tế (đặc trưng quan trọng gắn kết bền vững); (4) Cộng đồng bền vững về văn hóa, tâm lý, tính cách; (5) Cộng đồng người có một nhà nước và pháp luật thống nhất.',
+          '<strong>Sự khác biệt lịch sử hình thành dân tộc:</strong> Ở <em>Châu Âu (phương Tây)</em>, dân tộc hình thành gắn liền với sự ra đời của chủ nghĩa tư bản. Ở <em>Phương Đông (như Việt Nam)</em>, dân tộc hình thành <strong>sớm hơn</strong> trước khi CNTB xác lập, do yêu cầu trị thủy, sản xuất nông nghiệp và chống giặc ngoại xâm.',
+          '<strong>Mối quan hệ Giai cấp – Dân tộc – Nhân loại:</strong> Quan hệ giai cấp quyết định khuynh hướng phát triển và tính chất của dân tộc; vấn đề dân tộc tác động mạnh mẽ trở lại vấn đề giai cấp (giải phóng dân tộc là tiền đề giải phóng giai cấp). Lợi ích giai cấp công nhân thống nhất về căn bản với lợi ích dân tộc và lợi ích nhân loại tiến bộ.'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Liên hệ Việt Nam:</strong> Chủ tịch Hồ Chí Minh đã vận dụng sáng tạo quan hệ giai cấp - dân tộc khi đặt nhiệm vụ giải phóng dân tộc lên hàng đầu trong cách mạng thuộc địa nửa phong kiến ("Độc lập dân tộc gắn liền với chủ nghĩa xã hội").',
+      '<strong>Lưu ý trong thời kỳ quá độ lên CNXH ở Việt Nam:</strong> Đấu tranh giai cấp vẫn tồn tại nhưng với nội dung mới (thực hiện thắng lợi công nghiệp hóa, hiện đại hóa, chống tiêu cực, tham nhũng, đấu tranh làm thất bại âm mưu "diễn biến hòa bình") và hình thức mới (chủ yếu bằng hòa bình, kinh tế, pháp luật, giáo dục).'
+    ],
+    traps: [
+      { wrong: 'Đấu tranh giai cấp là động lực duy nhất thúc đẩy lịch sử mọi thời đại.', right: 'SAI! Đấu tranh giai cấp chỉ là động lực TRỰC TIẾP trong xã hội có giai cấp đối kháng (không có ở xã hội cộng sản nguyên thủy). Động lực sâu xa, xét đến cùng của mọi thời đại là sự phát triển của LLSX.' },
+      { wrong: 'Mọi dân tộc trên thế giới đều chỉ hình thành khi chủ nghĩa tư bản ra đời.', right: 'SAI! Chỉ đúng ở phương Tây (châu Âu). Ở phương Đông (Việt Nam, Trung Quốc...), dân tộc hình thành sớm hơn CNTB.' },
+      { wrong: 'Nguyên nhân trực tiếp dẫn đến sự ra đời của giai cấp là chiến tranh hoặc bạo lực.', right: 'SAI! Nguyên nhân trực tiếp là chế độ TƯ HỮU về tư liệu sản xuất (chiến tranh chỉ đẩy nhanh quá trình đó).' }
+    ]
+  },
+  {
+    id: 'c3-3',
+    chapter: 3,
+    code: '3.3',
+    title: 'Nhà nước và Cách mạng xã hội',
+    subtitle: 'Nguồn gốc, bản chất, 3 đặc trưng, chức năng, các kiểu nhà nước & bản chất, phương pháp cách mạng xã hội',
+    weight: 'Trọng tâm Trắc nghiệm & Đúng/Sai',
+    core: [
+      {
+        heading: '1. Nhà nước',
+        points: [
+          '<strong>Nguồn gốc nhà nước:</strong> <em>Nguyên nhân sâu xa</em>: sự phát triển của LLSX dẫn đến của cải dư thừa và tư hữu. <em>Nguyên nhân trực tiếp</em>: <strong>mâu thuẫn giai cấp phát triển đến mức không thể điều hòa được</strong> → giai cấp thống trị về kinh tế lập ra nhà nước để duy trì trật tự và trấn áp giai cấp bị trị.',
+          '<strong>Bản chất của nhà nước:</strong> Là một tổ chức chính trị của một giai cấp thống trị về mặt kinh tế nhằm bảo vệ trật tự hiện hành và đàn áp sự phản kháng của các giai cấp khác (mang bản chất giai cấp sâu sắc, đồng thời có tính xã hội).',
+          '<strong>3 đặc trưng cơ bản của nhà nước:</strong> (1) Quản lý cư dân trên một vùng lãnh thổ nhất định; (2) Có hệ thống các cơ quan quyền lực chuyên nghiệp mang tính cưỡng chế (quân đội, cảnh sát, nhà tù, tòa án...); (3) Có hệ thống thuế khóa để nuôi bộ máy chính quyền.',
+          '<strong>Chức năng của nhà nước:</strong> Gồm Chức năng <em>thống trị chính trị</em> (bản chất giai cấp — cơ bản nhất) và Chức năng <em>xã hội</em> (quản lý công việc chung); xét theo phạm vi có chức năng <em>đối nội</em> (giữ vai trò chủ yếu) và <em>đối ngoại</em>.',
+          '<strong>4 kiểu nhà nước trong lịch sử:</strong> Nhà nước chủ nô → Nhà nước phong kiến → Nhà nước tư sản → Nhà nước vô sản (nhà nước "kiểu mới", "nửa nhà nước" — công cụ của đại đa số nhân dân lao động, tiến tới tự tiêu vong khi hết giai cấp).'
+        ]
+      },
+      {
+        heading: '2. Cách mạng xã hội (CMXH)',
+        points: [
+          '<strong>Nguồn gốc của CMXH:</strong> <em>Sâu xa</em> là mâu thuẫn giữa LLSX phát triển với QHSX đã lỗi thời; <em>Trực tiếp</em> là đấu tranh giai cấp giữa giai cấp cách mạng và giai cấp thống trị phản động.',
+          '<strong>Bản chất:</strong> Là sự thay đổi căn bản về chất toàn bộ các lĩnh vực đời sống xã hội, thay thế một HTKT-XH lỗi thời bằng một HTKT-XH tiến bộ hơn. <strong>Vấn đề cơ bản của mọi cuộc CMXH là vấn đề giành chính quyền nhà nước.</strong>',
+          '<strong>Phân biệt:</strong> <em>Cách mạng xã hội</em> (thay đổi căn bản chế độ xã hội, có sự tham gia của quần chúng) ≠ <em>Tiến hóa xã hội</em> (thay đổi dần dần từng bộ phận trong khuôn khổ chế độ cũ) ≠ <em>Cải cách xã hội</em> (thay đổi bộ phận từ trên xuống) ≠ <em>Đảo chính</em> (thay đổi người cầm quyền giữa các phe phái mà không đổi bản chất chế độ xã hội).',
+          '<strong>Điều kiện khách quan (Tình thế cách mạng) & Nhân tố chủ quan:</strong> Tình thế cách mạng gồm 3 dấu hiệu (giai cấp thống trị khủng hoảng không thể cai trị như cũ; giai cấp bị trị khổ cực hơn bình thường; tính tích cực quần chúng nâng cao). Nhưng cách mạng chỉ thắng lợi khi kết hợp <strong>nhân tố chủ quan</strong> (sự giác ngộ, tổ chức, đường lối đúng đắn của giai cấp lãnh đạo và đảng cách mạng).',
+          '<strong>Phương pháp cách mạng:</strong> Phương pháp cách mạng bạo lực (phổ biến) và Phương pháp hòa bình (rất quý và hiếm, chỉ xảy ra trong điều kiện cực kỳ đặc biệt).'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Tại sao Lênin gọi Nhà nước vô sản là "nhà nước không còn nguyên nghĩa" (nửa nhà nước)?</strong> Vì mọi nhà nước bóc lột trước đó đều là công cụ của thiểu số trấn áp đa số. Nhà nước vô sản là công cụ của đại đa số nhân dân lao động trấn áp thiểu số phản kháng và chủ yếu thực hiện chức năng tổ chức, xây dựng xã hội mới.',
+      '<strong>Đừng đánh đồng "Bạo lực cách mạng" với "đổ máu bằng mọi giá":</strong> Bạo lực cách mạng là sức mạnh tổng hợp của quần chúng (gồm cả đấu tranh chính trị và đấu tranh vũ trang khi cần thiết) để đập tan bộ máy bạo lực của giai cấp thống trị cũ.'
+    ],
+    traps: [
+      { wrong: 'Nhà nước ra đời ngay khi xã hội loài người xuất hiện để quản lý chung.', right: 'SAI! Xã hội cộng sản nguyên thủy không có nhà nước. Nhà nước chỉ ra đời khi có chế độ tư hữu và mâu thuẫn giai cấp KHÔNG THỂ ĐIỀU HÒA ĐƯỢC.' },
+      { wrong: 'Nhà nước là cơ quan đứng trên các giai cấp, điều hòa mâu thuẫn giai cấp.', right: 'SAI (đây là quan điểm tư sản/duy tâm)! Nhà nước là sản phẩm của những mâu thuẫn giai cấp KHÔNG THỂ điều hòa và luôn mang bản chất của giai cấp thống trị về kinh tế.' },
+      { wrong: 'Đảo chính quân sự cũng là một cuộc cách mạng xã hội.', right: 'SAI! Đảo chính chỉ là hành động của một nhóm người nhằm thay đổi nhân sự cầm quyền, không làm thay đổi bản chất chế độ kinh tế - xã hội.' }
+    ]
+  },
+  {
+    id: 'c3-4',
+    chapter: 3,
+    code: '3.4',
+    title: 'Ý thức xã hội',
+    subtitle: 'Tồn tại xã hội (3 yếu tố), Ý thức xã hội, kết cấu, 7 hình thái YTXH & 5 biểu hiện tính độc lập tương đối',
+    weight: 'CỰC KỲ HAY RA THI (Cả Trắc nghiệm & Tự luận)',
+    core: [
+      {
+        heading: '1. Tồn tại xã hội (TTXH) và 3 yếu tố cơ bản',
+        points: [
+          '<strong>Khái niệm TTXH:</strong> Là toàn bộ sinh hoạt vật chất và những điều kiện sinh hoạt vật chất của xã hội.',
+          '<strong>3 yếu tố cơ bản của TTXH:</strong> (1) <strong>Phương thức sản xuất vật chất</strong> (YẾU TỐ QUAN TRỌNG NHẤT, QUYẾT ĐỊNH); (2) Điều kiện tự nhiên, hoàn cảnh địa lý; (3) Dân số và mật độ dân số.'
+        ]
+      },
+      {
+        heading: '2. Ý thức xã hội (YTXH) và Kết cấu',
+        points: [
+          '<strong>Khái niệm YTXH:</strong> Là mặt tinh thần của đời sống xã hội, là lĩnh vực tinh thần của xã hội nảy sinh từ tồn tại xã hội và phản ánh tồn tại xã hội trong những giai đoạn lịch sử nhất định.',
+          '<strong>Kết cấu YTXH:</strong> (1) Theo trình độ phản ánh: <em>Ý thức xã hội thông thường</em> (tri thức, kinh nghiệm đời thường) và <em>Ý thức lý luận</em> (hệ thống khái niệm, học thuyết khoa học/tư tưởng); (2) Theo nội dung và phương thức phản ánh: <strong>Tâm lý xã hội</strong> (tình cảm, ước muốn, thói quen, tập quán — phản ánh trực tiếp, tự phát) và <strong>Hệ tư tưởng</strong> (hệ thống quan điểm lý luận sâu sắc, tự giác, mang tính giai cấp rõ nét — cốt lõi của YTXH).',
+          '<strong>7 hình thái YTXH cơ bản:</strong> Ý thức chính trị (giữ vai trò định hướng, chi phối mạnh nhất trong xã hội có giai cấp), Ý thức pháp quyền, Ý thức đạo đức, Ý thức nghệ thuật (thẩm mỹ), Ý thức tôn giáo, Ý thức khoa học, Ý thức triết học.'
+        ]
+      },
+      {
+        heading: '3. Quan hệ biện chứng TTXH – YTXH & 5 Biểu hiện Tính độc lập tương đối của YTXH',
+        points: [
+          '<strong>TTXH quyết định YTXH:</strong> TTXH thế nào thì YTXH thế ấy; TTXH biến đổi (nhất là PTSX biến đổi) thì sớm muộn YTXH cũng biến đổi theo.',
+          '<strong>5 biểu hiện Tính độc lập tương đối của YTXH (PHẢI THUỘC LÒNG ĐỂ VIẾT TỰ LUẬN):</strong>',
+          '① <strong>YTXH thường lạc hậu hơn TTXH:</strong> Do YTXH chỉ biến đổi sau khi TTXH biến đổi; do sức mạnh của thói quen, tập quán, truyền thống bảo thủ; và do các lực lượng xã hội phản tiến bộ cố tình lưu giữ tư tưởng cũ.',
+          '② <strong>YTXH có thể vượt trước TTXH:</strong> Những tư tưởng khoa học tiên tiến có thể dự báo tương lai, định hướng thực tiễn (nhưng không tách rời cơ sở thực tế mà bắt nguồn từ việc nắm bắt quy luật vận động của TTXH).',
+          '③ <strong>YTXH có tính kế thừa trong sự phát triển:</strong> Tư tưởng thời đại sau luôn kế thừa chọn lọc tư tưởng thời đại trước (giải thích vì sao một nước kinh tế kém phát triển hơn vẫn có thể đạt đỉnh cao về triết học hay nghệ thuật — ví dụ nước Đức thế kỷ XVIII–XIX so với Anh, Pháp).',
+          '④ <strong>Sự tác động qua lại giữa các hình thái YTXH:</strong> Các hình thái (chính trị, pháp quyền, đạo đức, tôn giáo, nghệ thuật...) tác động lẫn nhau; ở mỗi thời kỳ lịch sử thường có một hình thái nổi lên chi phối (thời Trung cổ là tôn giáo, thời hiện đại là chính trị và khoa học).',
+          '⑤ <strong>YTXH tác động trở lại TTXH:</strong> Thông qua hoạt động thực tiễn của con người; tư tưởng tiến bộ thúc đẩy TTXH phát triển, tư tưởng lạc hậu phản động kìm hãm TTXH.'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Phân biệt "Tồn tại xã hội" vs "Cơ sở hạ tầng":</strong> TTXH rộng hơn CSHT! CSHT chỉ gồm các quan hệ sản xuất, còn TTXH bao gồm cả Phương thức sản xuất (gồm cả LLSX + QHSX), điều kiện tự nhiên và dân số.',
+      '<strong>Liên hệ thực tiễn Việt Nam (5 tính độc lập tương đối):</strong> Tại sao xã hội hiện đại vẫn còn tư tưởng trọng nam khinh nữ, mê tín dị đoan, cục bộ địa phương? → Do <em>YTXH thường lạc hậu hơn TTXH</em>! Vì vậy xây dựng nền văn hóa mới đòi hỏi kiên trì, không thể dùng mệnh lệnh hành chính xóa bỏ ngày một ngày hai, đồng thời phải xây dựng nền tảng kinh tế mới (TTXH mới) kết hợp giáo dục tư tưởng.'
+    ],
+    traps: [
+      { wrong: 'Ý thức xã hội là tổng số cộng dồn đơn giản các ý thức cá nhân.', right: 'SAI! YTXH và ý thức cá nhân có quan hệ cái chung - cái riêng; YTXH không phải phép cộng cơ học các ý thức cá nhân.' },
+      { wrong: 'Trong TTXH, điều kiện tự nhiên (địa lý, tài nguyên) là yếu tố quyết định nhất.', right: 'SAI! PHƯƠNG THỨC SẢN XUẤT VẬT CHẤT mới là yếu tố giữ vai trò cơ bản, quyết định nhất trong TTXH.' },
+      { wrong: 'YTXH vượt trước TTXH có nghĩa là YTXH không còn bị TTXH quyết định nữa.', right: 'SAI! Tư tưởng khoa học vượt trước được chính vì nó phản ánh đúng quy luật vận động khách quan của chính TTXH hiện có.' },
+      { wrong: 'Nhầm lẫn giữa Tâm lý xã hội và Hệ tư tưởng.', right: 'CHÚ Ý: Tâm lý xã hội hình thành TỰ PHÁT từ đời sống hàng ngày (tình cảm, tập quán); Hệ tư tưởng hình thành TỰ GIÁC do các nhà tư tưởng xây dựng thành lý luận và truyền bá.' }
+    ]
+  },
+  {
+    id: 'c3-5',
+    chapter: 3,
+    code: '3.5',
+    title: 'Triết học về Con người',
+    subtitle: 'Thực thể sinh học - xã hội, bản chất con người, tha hóa & giải phóng con người, quần chúng nhân dân & lãnh tụ',
+    weight: 'Hay ra Câu hỏi phân loại & Liên hệ bản thân',
+    core: [
+      {
+        heading: '1. Con người và Bản chất con người',
+        quote: '“Trong tính hiện thực của nó, bản chất con người là tổng hòa những quan hệ xã hội.” (C. Mác – Luận cương về Phoiơbắc)',
+        points: [
+          '<strong>Con người là thực thể sinh học – xã hội:</strong> Về mặt <em>sinh học</em>, con người là sản phẩm tiến hóa của giới tự nhiên, chịu chi phối của quy luật sinh học (ăn, ở, di truyền...). Về mặt <em>xã hội</em>, lao động đã tách con người khỏi giới động vật; con người sống trong xã hội và chịu sự chi phối của quy luật xã hội. Hai mặt thống nhất hữu cơ, trong đó <strong>mặt xã hội giữ vai trò quyết định bản chất con người</strong>.',
+          '<strong>Con người vừa là chủ thể của lịch sử, vừa là sản phẩm của lịch sử:</strong> Con người sáng tạo ra lịch sử thông qua hoạt động thực tiễn, nhưng không sáng tạo một cách tùy tiện mà trên cơ sở những điều kiện lịch sử khách quan đã có sẵn.',
+          '<strong>Phân tích mệnh đề "tổng hòa những quan hệ xã hội":</strong> Dùng từ <em>"tổng hòa"</em> chứ không phải "tổng cộng" — nghĩa là các quan hệ xã hội (kinh tế, chính trị, đạo đức, gia đình, quá khứ - hiện tại...) đan xen, tác động qua lại, quy định lẫn nhau tạo nên bản chất con người cụ thể, lịch sử (không có con người trừu tượng, bất biến).'
+        ]
+      },
+      {
+        heading: '2. Hiện tượng Tha hóa con người và Giải phóng con người',
+        points: [
+          '<strong>Thực chất của hiện tượng tha hóa:</strong> Là <strong>lao động của con người bị tha hóa</strong> trong xã hội có chế độ tư hữu về TLSX (đặc biệt dưới CNTB): sản phẩm do người lao động tạo ra trở thành lực lượng xa lạ thống trị ngược lại chính họ; lao động không còn là niềm vui sáng tạo mà trở thành gánh nặng cưỡng bức chỉ để duy trì sinh tồn.',
+          '<strong>Mục tiêu giải phóng con người:</strong> Xóa bỏ chế độ tư hữu về TLSX, xóa bỏ áp bức bóc lột để khắc phục tha hóa, tiến tới mục tiêu cao nhất của chủ nghĩa cộng sản: <em>“Sự phát triển tự do của mỗi người là điều kiện cho sự phát triển tự do của tất cả mọi người.”</em>'
+        ]
+      },
+      {
+        heading: '3. Quan hệ Cá nhân – Xã hội; Vai trò của Quần chúng nhân dân và Lãnh tụ',
+        points: [
+          '<strong>Quần chúng nhân dân (QCND):</strong> Là cộng đồng xã hội có chung lợi ích căn bản, lấy <em>những người lao động sản xuất ra của cải vật chất và tinh thần</em> làm hạt nhân cơ bản. <strong>QCND là chủ thể sáng tạo chân chính, là động lực quyết định mọi cuộc cách mạng và lịch sử</strong> (thể hiện ở 3 mặt: tạo ra của cải vật chất; lực lượng cơ bản của cách mạng xã hội; người sáng tạo và kiểm nghiệm các giá trị văn hóa tinh thần).',
+          '<strong>Cá nhân kiệt xuất / Lãnh tụ (Vĩ nhân):</strong> Là những cá nhân xuất sắc gắn bó với phong trào quần chúng, nắm bắt được quy luật lịch sử, có năng lực tổ chức tập hợp quần chúng. Lãnh tụ có vai trò to lớn (định hướng, thúc đẩy hoặc kìm hãm tiến trình lịch sử) nhưng <strong>không thể thay thế vai trò quyết định của QCND</strong>.',
+          '<strong>Ý nghĩa phương pháp luận:</strong> Quán triệt quan điểm "lấy dân làm gốc"; chống hai sai lầm: <em>Tệ sùng bái cá nhân</em> (thần thánh hóa lãnh tụ, coi thường quần chúng) và <em>Xem nhẹ vai trò cá nhân lãnh đạo</em> (vô chính phủ).'
+        ]
+      }
+    ],
+    advanced: [
+      '<strong>Tại sao Mác dùng từ "Tổng hòa" chứ không dùng "Tổng số"?</strong> "Tổng số" là phép cộng cơ học các quan hệ tách rời. "Tổng hòa" nhấn mạnh sự kết hợp hữu cơ, thấm nhuần và tương tác qua lại giữa tất cả các quan hệ xã hội (kinh tế, chính trị, văn hóa, gia đình...) làm nên nhân cách sống động.',
+      '<strong>Liên hệ chiến lược con người ở Việt Nam:</strong> Đảng xác định con người vừa là <em>mục tiêu</em>, vừa là <em>động lực</em> của sự phát triển; phát triển con người toàn diện về Đức - Trí - Thể - Mỹ trong kỷ nguyên số.'
+    ],
+    traps: [
+      { wrong: 'Mác cho rằng bản chất con người chỉ thuần túy là mặt xã hội, bỏ qua mặt sinh học.', right: 'SAI! Mác khẳng định con người là thực thể thống nhất SINH HỌC - XÃ HỘI; mặt sinh học là tiền đề, cơ sở tự nhiên, còn mặt xã hội quyết định bản chất người.' },
+      { wrong: 'Các vị anh hùng, vĩ nhân là người quyết định chiều hướng phát triển của lịch sử.', right: 'SAI (đây là quan điểm duy tâm lịch sử)! QUẦN CHÚNG NHÂN DÂN mới là người sáng tạo chân chính và quyết định lịch sử; lãnh tụ chỉ thúc đẩy nhanh/chậm tiến trình đó.' },
+      { wrong: 'Hiện tượng tha hóa con người tồn tại vĩnh viễn ở mọi hình thái xã hội.', right: 'SAI! Tha hóa là hiện tượng LỊCH SỬ, gắn liền với chế độ tư hữu về TLSX và phân công lao động bóc lột; nó sẽ bị xóa bỏ khi xóa bỏ chế độ tư hữu TBCN.' }
+    ]
+  }
+];
+
+// ============================================================================
+// 2. NGÂN HÀNG CÂU HỎI TRẮC NGHIỆM (45 CÂU ĐA DẠNG: NHẬN BIẾT - THÔNG HIỂU - VẬN DỤNG - BẪY)
+// ============================================================================
+const MCQ_BANK = [
+  // Chương 1 (12 câu)
+  { id: 'q1', ch: 1, topic: 'c1-1', level: 'Nhận biết', q: 'Triết học ra đời vào khoảng thời gian nào và ở đâu?', opts: ['Khoảng thế kỷ VIII – VI TCN ở cả phương Đông và phương Tây', 'Ngay khi loài người xuất hiện trong xã hội nguyên thủy', 'Thế kỷ XV – XVI tại châu Âu thời Phục hưng', 'Thế kỷ XIX tại nước Đức'], ans: 0, exp: 'Triết học ra đời gần như cùng lúc vào khoảng thế kỷ VIII – VI TCN tại các trung tâm văn minh lớn của phương Đông (Ấn Độ, Trung Quốc) và phương Tây (Hy Lạp cổ đại).' },
+  { id: 'q2', ch: 1, topic: 'c1-1', level: 'Câu bẫy', q: 'Nguồn gốc xã hội dẫn đến sự ra đời của triết học là gì?', opts: ['Sự phát triển của khoa học tự nhiên hiện đại', 'Xã hội xuất hiện chế độ tư hữu, phân chia giai cấp và sự tách biệt lao động trí óc khỏi lao động chân tay', 'Nhu cầu sinh tồn cơ bản của bầy người nguyên thủy', 'Sự ra đời của máy móc đại công nghiệp'], ans: 1, exp: 'Nguồn gốc xã hội của triết học gắn với chế độ chiếm hữu nô lệ, khi lao động trí óc tách khỏi lao động chân tay và xuất hiện tầng lớp trí thức có điều kiện khái quát hóa lý luận.' },
+  { id: 'q3', ch: 1, topic: 'c1-1', level: 'Nhận biết', q: 'Theo Ph. Ăngghen, vấn đề cơ bản lớn của mọi triết học, đặc biệt là triết học hiện đại, là mối quan hệ giữa:', opts: ['Lực lượng sản xuất và quan hệ sản xuất', 'Tư duy và tồn tại (ý thức và vật chất)', 'Cá nhân và xã hội', 'Cơ sở hạ tầng và kiến trúc thượng tầng'], ans: 1, exp: 'Ph. Ăngghen khẳng định trong tác phẩm Lútvích Phoiơbắc và sự cáo chung của triết học cổ điển Đức: vấn đề cơ bản của mọi triết học là mối quan hệ giữa tư duy và tồn tại.' },
+  { id: 'q4', ch: 1, topic: 'c1-1', level: 'Câu bẫy', q: 'Việc giải quyết mặt thứ nhất của vấn đề cơ bản triết học là cơ sở để phân chia các nhà triết học thành:', opts: ['Thuyết khả tri và thuyết bất khả tri', 'Phương pháp biện chứng và phương pháp siêu hình', 'Chủ nghĩa duy vật và chủ nghĩa duy tâm', 'Chủ nghĩa duy vật lịch sử và chủ nghĩa duy tâm lịch sử'], ans: 2, exp: 'Mặt thứ nhất (bản thể luận) hỏi vật chất hay ý thức có trước/quyết định → chia thành CNDV và CNDT. Mặt thứ hai (nhận thức luận) mới chia thành khả tri và bất khả tri.' },
+  { id: 'q5', ch: 1, topic: 'c1-1', level: 'Thông hiểu', q: 'Luận điểm của Hêghen cho rằng "Ý niệm tuyệt đối" có trước và sinh ra giới tự nhiên, xã hội thuộc trường phái nào?', opts: ['Chủ nghĩa duy tâm chủ quan', 'Chủ nghĩa duy tâm khách quan', 'Chủ nghĩa duy vật siêu hình', 'Nhị nguyên luận'], ans: 1, exp: 'CNDT khách quan thừa nhận một thực thể tinh thần khách quan tồn tại độc lập bên ngoài ý thức con người (như Ý niệm của Plato, Ý niệm tuyệt đối của Hegel) sinh ra thế giới.' },
+  { id: 'q6', ch: 1, topic: 'c1-1', level: 'Thông hiểu', q: 'Hình thức phát triển cao nhất của chủ nghĩa duy vật trong lịch sử triết học là:', opts: ['Chủ nghĩa duy vật chất phác cổ đại', 'Chủ nghĩa duy vật siêu hình thế kỷ XVII – XVIII', 'Chủ nghĩa duy vật biện chứng', 'Chủ nghĩa duy vật nhân bản của Feuerbach'], ans: 2, exp: 'Chủ nghĩa duy vật biện chứng do C. Mác và Ph. Ăngghen sáng lập, V.I. Lênin phát triển là đỉnh cao nhất, khắc phục hạn chế trực quan cổ đại và máy móc siêu hình.' },
+  { id: 'q7', ch: 1, topic: 'c1-1', level: 'Câu bẫy', q: 'Quan điểm: "Vật chất và tinh thần là hai bản nguyên độc lập, tồn tại song song, không cái nào sinh ra cái nào" thuộc lập trường:', opts: ['Chủ nghĩa duy vật biện chứng', 'Chủ nghĩa duy tâm khách quan', 'Nhị nguyên luận', 'Thuyết bất khả tri'], ans: 2, exp: 'Nhị nguyên luận (tiêu biểu là R. Descartes) thừa nhận song song hai bản nguyên vật chất và tinh thần độc lập nhau.' },
+  { id: 'q8', ch: 1, topic: 'c1-1', level: 'Thông hiểu', q: 'Đặc trưng cốt lõi của phương pháp tư duy siêu hình là:', opts: ['Xem xét sự vật trong mối liên hệ phổ biến và luôn vận động', 'Xem xét sự vật trong trạng thái cô lập, tách rời và tĩnh tại, bất biến', 'Coi đấu tranh giữa các mặt đối lập là nguồn gốc phát triển', 'Phản ánh đúng quy luật chuyển hóa từ lượng sang chất'], ans: 1, exp: 'Phương pháp siêu hình nhìn nhận sự vật cô lập, cứng nhắc, không phát triển (hoặc chỉ tăng giảm đơn thuần về lượng do tác động bên ngoài).' },
+  { id: 'q9', ch: 1, topic: 'c1-2', level: 'Nhận biết', q: 'Tiền đề lý luận trực tiếp nhất cho sự ra đời của Triết học Mác là:', opts: ['Triết học cổ điển Đức (Hegel và Feuerbach)', 'Kinh tế chính trị cổ điển Anh', 'Chủ nghĩa xã hội không tưởng Pháp', 'Triết học Hy Lạp cổ đại'], ans: 0, exp: 'Triết học Mác kế thừa trực tiếp và có phê phán phép biện chứng của Hegel và chủ nghĩa duy vật của Feuerbach trong Triết học cổ điển Đức.' },
+  { id: 'q10', ch: 1, topic: 'c1-2', level: 'Nhận biết', q: 'Ba phát minh lớn của khoa học tự nhiên thế kỷ XIX làm tiền đề cho sự ra đời Triết học Mác gồm:', opts: ['Thuyết tương đối, Cơ học lượng tử, Tia X', 'Định luật bảo toàn và chuyển hóa năng lượng, Học thuyết tế bào, Học thuyết tiến hóa của Darwin', 'Định luật vạn vật hấp dẫn, Thuyết nhật tâm, Định luật bảo toàn khối lượng', 'Phóng xạ, Điện tử, Cấu trúc ADN'], ans: 1, exp: '3 phát minh thế kỷ XIX (Bảo toàn năng lượng, Tế bào, Tiến hóa Darwin) đã giáng đòn mạnh vào tư duy siêu hình và thần học, tạo tiền đề KHTN trực tiếp cho CNDV biện chứng.' },
+  { id: 'q11', ch: 1, topic: 'c1-2', level: 'Vận dụng', q: 'Nội dung chủ yếu, vĩ đại nhất tạo nên bước ngoặt cách mạng trong triết học do C. Mác và Ph. Ăngghen thực hiện là:', opts: ['Phát hiện ra nguyên tử và điện tử', 'Sáng tạo ra Chủ nghĩa duy vật lịch sử', 'Kế thừa nguyên xi phép biện chứng của Hegel', 'Xóa bỏ hoàn toàn các khoa học cụ thể'], ans: 1, exp: 'Sáng tạo ra CNDV lịch sử đã khắc phục tính "duy vật nửa vời" của các nhà duy vật trước Mác, đưa CNDV trở thành triệt để cả trong tự nhiên lẫn xã hội.' },
+  { id: 'q12', ch: 1, topic: 'c1-2', level: 'Nhận biết', q: 'Tác phẩm nào đánh dấu sự ra đời chín muồi của Chủ nghĩa Mác với tư cách một học thuyết cách mạng hoàn chỉnh vào tháng 2/1848?', opts: ['Hệ tư tưởng Đức', 'Tuyên ngôn của Đảng Cộng sản', 'Biện chứng của tự nhiên', 'Bút ký triết học'], ans: 1, exp: 'Tuyên ngôn của Đảng Cộng sản (2/1848) do C. Mác và Ph. Ăngghen soạn thảo là văn kiện cương lĩnh đầu tiên đánh dấu sự ra đời chín muồi của chủ nghĩa Mác.' },
+
+  // Chương 2 (18 câu)
+  { id: 'q13', ch: 2, topic: 'c2-1', level: 'Nhận biết', q: 'Theo định nghĩa vật chất của V.I. Lênin, thuộc tính chung nhất, duy nhất để phân biệt vật chất với ý thức là:', opts: ['Có khối lượng và quảng tính', 'Tồn tại ở thể rắn, lỏng hoặc khí', 'Tồn tại khách quan, không lệ thuộc vào cảm giác (thực tại khách quan)', 'Có thể nhìn thấy bằng mắt thường'], ans: 2, exp: 'Thuộc tính duy nhất của vật chất mà chủ nghĩa duy vật triết học gắn liền với việc thừa nhận là thuộc tính tồn tại khách quan, tồn tại ngoài ý thức của chúng ta.' },
+  { id: 'q14', ch: 2, topic: 'c2-1', level: 'Thông hiểu', q: 'Cuộc khủng hoảng trong vật lý học cuối thế kỷ XIX – đầu thế kỷ XX (phát hiện tia X, phóng xạ, điện tử) đã chứng minh điều gì?', opts: ['Vật chất đã tiêu tan biến mất hoàn toàn', 'Giới hạn hiểu biết cũ của con người về vật chất bị phá vỡ, không phải vật chất tiêu tan', 'Chủ nghĩa duy tâm là đúng đắn', 'Nguyên tử không còn tồn tại trong tự nhiên'], ans: 1, exp: 'Lênin chỉ rõ: không phải vật chất tiêu tan, mà chỉ có giới hạn nhận thức cũ (đồng nhất vật chất với nguyên tử bất biến) tiêu tan.' },
+  { id: 'q15', ch: 2, topic: 'c2-1', level: 'Câu bẫy', q: 'Theo quan điểm CNDV biện chứng, mối quan hệ giữa vận động và đứng im là:', opts: ['Vận động là tương đối, đứng im là tuyệt đối', 'Cả vận động và đứng im đều là tuyệt đối', 'Vận động là tuyệt đối, vĩnh viễn; đứng im là tương đối, tạm thời', 'Đứng im là sự ngừng vận động hoàn toàn của vật chất'], ans: 2, exp: 'Vận động là phương thức tồn tại của vật chất nên tuyệt đối, vĩnh viễn; đứng im chỉ là tương đối, tạm thời trong một quan hệ và hình thức vận động xác định.' },
+  { id: 'q16', ch: 2, topic: 'c2-1', level: 'Nhận biết', q: 'Trình tự 5 hình thức vận động cơ bản của vật chất từ thấp đến cao theo Ph. Ăngghen là:', opts: ['Cơ học → Hóa học → Vật lý → Sinh học → Xã hội', 'Cơ học → Vật lý → Hóa học → Sinh học → Xã hội', 'Vật lý → Cơ học → Hóa học → Xã hội → Sinh học', 'Hóa học → Vật lý → Cơ học → Sinh học → Xã hội'], ans: 1, exp: 'Thứ tự chuẩn của Ph. Ăngghen từ thấp đến cao: Cơ học → Vật lý → Hóa học → Sinh học → Xã hội.' },
+  { id: 'q17', ch: 2, topic: 'c2-1', level: 'Câu bẫy', q: 'Yếu tố nào giữ vai trò quyết định TRỰC TIẾP cho sự ra đời của ý thức?', opts: ['Bộ óc người và thế giới khách quan', 'Lao động và ngôn ngữ (nguồn gốc xã hội)', 'Sự tiến hóa tự nhiên của loài vượn cổ', 'Cảm giác và bản năng sinh tồn'], ans: 1, exp: 'Bộ óc người và thế giới khách quan là nguồn gốc tự nhiên (điều kiện cần); lao động và ngôn ngữ (nguồn gốc xã hội) mới là điều kiện đủ, quyết định trực tiếp.' },
+  { id: 'q18', ch: 2, topic: 'c2-1', level: 'Câu bẫy', q: 'Trong kết cấu theo chiều ngang của ý thức (tri thức, tình cảm, niềm tin, ý chí), yếu tố nào là hạt nhân cốt lõi quan trọng nhất?', opts: ['Tình cảm', 'Ý chí', 'Niềm tin', 'Tri thức'], ans: 3, exp: 'Tri thức là phương thức tồn tại của ý thức và là điều kiện để ý thức phát triển; không có tri thức thì tình cảm, niềm tin trở nên mù quáng.' },
+  { id: 'q19', ch: 2, topic: 'c2-1', level: 'Vận dụng', q: 'Ý thức có thể tác động trở lại làm biến đổi hiện thực vật chất bằng cách nào?', opts: ['Tự bản thân ý thức trực tiếp sinh ra của cải vật chất', 'Thông qua hoạt động thực tiễn của con người', 'Thông qua sự cầu nguyện và niềm tin thuần túy', 'Ý thức hoàn toàn thụ động, không thể tác động lại vật chất'], ans: 1, exp: 'Tự bản thân ý thức không trực tiếp làm thay đổi gì trong hiện thực; nó chỉ tác động trở lại vật chất thông qua hoạt động thực tiễn của con người.' },
+  { id: 'q20', ch: 2, topic: 'c2-1', level: 'Vận dụng', q: 'Một doanh nghiệp đặt chỉ tiêu tăng trưởng doanh thu 500% trong 1 tháng mà bỏ qua năng lực sản xuất và sức mua thị trường đang mắc phải sai lầm nào?', opts: ['Bệnh thụ động, ỷ lại, bảo thủ', 'Bệnh chủ quan duy ý chí', 'Chủ nghĩa kinh nghiệm', 'Thuyết bất khả tri'], ans: 1, exp: 'Bất chấp điều kiện khách quan và quy luật kinh tế, chỉ xuất phát từ mong muốn chủ quan là biểu hiện điển hình của bệnh chủ quan duy ý chí.' },
+  { id: 'q21', ch: 2, topic: 'c2-2', level: 'Thông hiểu', q: 'Quan điểm toàn diện trong nhận thức và thực tiễn được rút ra trực tiếp từ cơ sở lý luận nào?', opts: ['Nguyên lý về sự phát triển', 'Nguyên lý về mối liên hệ phổ biến', 'Quy luật phủ định của phủ định', 'Cặp phạm trù khả năng và hiện thực'], ans: 1, exp: 'Từ nguyên lý về mối liên hệ phổ biến rút ra quan điểm toàn diện (và quan điểm lịch sử - cụ thể).' },
+  { id: 'q22', ch: 2, topic: 'c2-2', level: 'Câu bẫy', q: 'So sánh giữa "cái riêng" và "cái chung", khẳng định nào sau đây là ĐÚNG theo phép biện chứng duy vật?', opts: ['Cái chung rộng hơn và phong phú hơn cái riêng', 'Cái riêng phong phú hơn cái chung, còn cái chung sâu sắc hơn cái riêng', 'Cái chung tồn tại độc lập bên ngoài cái riêng', 'Cái đơn nhất không bao giờ có thể chuyển hóa thành cái chung'], ans: 1, exp: 'Vì Cái riêng = Cái chung + Cái đơn nhất nên cái riêng phong phú hơn; còn cái chung phản ánh thuộc tính lặp lại, ổn định, gắn với bản chất nên sâu sắc hơn.' },
+  { id: 'q23', ch: 2, topic: 'c2-2', level: 'Thông hiểu', q: 'Trong quy luật Lượng – Chất, khoảng giới hạn mà ở đó sự thay đổi về lượng chưa làm thay đổi căn bản về chất của sự vật được gọi là:', opts: ['Điểm nút', 'Bước nhảy', 'Độ', 'Thuộc tính'], ans: 2, exp: 'Độ là khoảng giới hạn mà trong đó sự thay đổi về lượng chưa dẫn tới sự thay đổi căn bản về chất; Điểm nút là giới hạn mà lượng đổi đủ để tạo bước nhảy.' },
+  { id: 'q24', ch: 2, topic: 'c2-2', level: 'Vận dụng', q: 'Tư tưởng nóng vội, muốn đốt cháy giai đoạn khi chưa tích lũy đủ về lượng là biểu hiện của khuynh hướng sai lầm nào?', opts: ['Bệnh hữu khuynh (bảo thủ, trì trệ)', 'Bệnh tả khuynh (nóng vội, chủ quan)', 'Chủ nghĩa chiết trung', 'Chủ nghĩa kinh nghiệm'], ans: 1, exp: 'Không chịu tích lũy lượng mà đòi thực hiện bước nhảy ngay là bệnh tả khuynh; ngược lại đã đủ lượng nhưng sợ không dám thực hiện bước nhảy là bệnh hữu khuynh.' },
+  { id: 'q25', ch: 2, topic: 'c2-2', level: 'Nhận biết', q: 'Quy luật nào được V.I. Lênin gọi là "hạt nhân" của phép biện chứng duy vật?', opts: ['Quy luật chuyển hóa từ những thay đổi về lượng thành những thay đổi về chất và ngược lại', 'Quy luật thống nhất và đấu tranh của các mặt đối lập (Quy luật mâu thuẫn)', 'Quy luật phủ định của phủ định', 'Quy luật QHSX phù hợp với trình độ phát triển của LLSX'], ans: 1, exp: 'Quy luật mâu thuẫn là hạt nhân của phép biện chứng vì nó chỉ ra nguồn gốc, động lực bên trong của mọi sự vận động và phát triển.' },
+  { id: 'q26', ch: 2, topic: 'c2-2', level: 'Câu bẫy', q: 'Trong quy luật mâu thuẫn, mối quan hệ giữa sự "thống nhất" và sự "đấu tranh" của các mặt đối lập là:', opts: ['Thống nhất là tuyệt đối, đấu tranh là tương đối', 'Đấu tranh là tuyệt đối, thống nhất là tương đối, tạm thời', 'Cả hai đều chỉ mang tính tương đối', 'Thống nhất là nguồn gốc duy nhất của sự phát triển'], ans: 1, exp: 'Sự thống nhất gắn với đứng im tương đối; sự đấu tranh gắn với vận động tuyệt đối nên đấu tranh là tuyệt đối.' },
+  { id: 'q27', ch: 2, topic: 'c2-2', level: 'Thông hiểu', q: 'Hai đặc trưng cơ bản nhất của phủ định biện chứng là gì?', opts: ['Tính chủ quan và tính xóa bỏ hoàn toàn', 'Tính khách quan và tính kế thừa', 'Tính ngẫu nhiên và tính lặp lại nguyên xi', 'Tính áp đặt từ bên ngoài và tính tuần hoàn'], ans: 1, exp: 'Phủ định biện chứng mang tính khách quan (tự thân phủ định) và tính kế thừa (giữ lại yếu tố tích cực, lọc bỏ tiêu cực).' },
+  { id: 'q28', ch: 2, topic: 'c2-3', level: 'Câu bẫy', q: 'Trong 3 hình thức cơ bản của hoạt động thực tiễn, hình thức nào là cơ bản nhất, đầu tiên và quyết định các hình thức khác?', opts: ['Hoạt động thực nghiệm khoa học', 'Hoạt động chính trị - xã hội', 'Hoạt động sản xuất vật chất', 'Hoạt động nghiên cứu lý thuyết'], ans: 2, exp: 'Hoạt động sản xuất vật chất là hình thức cơ bản nhất, nguyên thủy nhất, tạo cơ sở vật chất cho mọi hoạt động khác.' },
+  { id: 'q29', ch: 2, topic: 'c2-3', level: 'Câu bẫy', q: 'Hình thức "Biểu tượng" thuộc giai đoạn nào của quá trình nhận thức?', opts: ['Giai đoạn nhận thức lý tính (tư duy trừu tượng)', 'Giai đoạn nhận thức cảm tính (trực quan sinh động)', 'Giai đoạn hoạt động thực tiễn', 'Không thuộc giai đoạn nào của nhận thức'], ans: 1, exp: 'Nhận thức cảm tính gồm 3 hình thức: Cảm giác → Tri giác → Biểu tượng. Biểu tượng là hình thức cao nhất của cảm tính (bước đệm sang lý tính).' },
+  { id: 'q30', ch: 2, topic: 'c2-3', level: 'Thông hiểu', q: 'Luận điểm "Không có chân lý trừu tượng, chân lý luôn luôn là cụ thể" phản ánh tính chất nào của chân lý?', opts: ['Tính khách quan', 'Tính tuyệt đối', 'Tính cụ thể', 'Tính chủ quan'], ans: 2, exp: 'Mọi chân lý đều phản ánh sự vật trong những điều kiện không gian, thời gian và mối liên hệ xác định; vượt ra khỏi điều kiện đó chân lý có thể trở thành sai lầm.' },
+
+  // Chương 3 (15 câu)
+  { id: 'q31', ch: 3, topic: 'c3-1', level: 'Câu bẫy', q: 'Trong lực lượng sản xuất, yếu tố nào giữ vai trò QUYẾT ĐỊNH hàng đầu và yếu tố nào là yếu tố ĐỘNG NHẤT, CÁCH MẠNG NHẤT?', opts: ['Công cụ lao động quyết định hàng đầu; Người lao động động nhất', 'Người lao động quyết định hàng đầu; Công cụ lao động động nhất, cách mạng nhất', 'Đối tượng lao động quyết định hàng đầu; Tư liệu lao động động nhất', 'Khoa học công nghệ quyết định hàng đầu; Đối tượng lao động động nhất'], ans: 1, exp: 'Người lao động là chủ thể sáng tạo và sử dụng công cụ nên giữ vai trò quyết định hàng đầu; công cụ lao động luôn được cải tiến liên tục nên là yếu tố động nhất, cách mạng nhất.' },
+  { id: 'q32', ch: 3, topic: 'c3-1', level: 'Nhận biết', q: 'Trong 3 mặt của quan hệ sản xuất, quan hệ nào giữ vai trò quyết định, chi phối các quan hệ khác?', opts: ['Quan hệ phân phối sản phẩm lao động', 'Quan hệ tổ chức và quản lý sản xuất', 'Quan hệ sở hữu đối với tư liệu sản xuất', 'Quan hệ trao đổi hàng hóa'], ans: 2, exp: 'Ai nắm quyền sở hữu tư liệu sản xuất thì người đó có quyền tổ chức quản lý và quyết định cách phân phối sản phẩm.' },
+  { id: 'q33', ch: 3, topic: 'c3-1', level: 'Câu bẫy', q: 'Trong Triết học Mác - Lênin, khái niệm "Cơ sở hạ tầng" dùng để chỉ:', opts: ['Hệ thống đường giao thông, cầu cống, điện, nước, viễn thông', 'Toàn bộ những quan hệ sản xuất hợp thành cơ cấu kinh tế của một xã hội nhất định', 'Toàn bộ lực lượng sản xuất và tài nguyên thiên nhiên', 'Hệ thống nhà máy, xí nghiệp và máy móc thiết bị'], ans: 1, exp: 'Đây là bẫy kinh điển nhất! CSHT trong triết học là tổng hợp các QHSX (thống trị, tàn dư, mầm mống) hợp thành cơ cấu kinh tế xã hội, KHÔNG phải hạ tầng kỹ thuật.' },
+  { id: 'q34', ch: 3, topic: 'c3-1', level: 'Nhận biết', q: 'Trong kiến trúc thượng tầng của xã hội có giai cấp, bộ phận nào có quyền lực mạnh mẽ nhất và tác động trực tiếp nhất tới cơ sở hạ tầng?', opts: ['Tôn giáo và giáo hội', 'Nhà nước', 'Nghệ thuật và đạo đức', 'Các hiệp hội nghề nghiệp'], ans: 1, exp: 'Nhà nước nắm bộ máy cưỡng chế và pháp luật nên là bộ phận có quyền lực mạnh nhất trong KTTT.' },
+  { id: 'q35', ch: 3, topic: 'c3-1', level: 'Vận dụng', q: 'Quan điểm "bỏ qua chế độ tư bản chủ nghĩa" trong thời kỳ quá độ lên CNXH ở Việt Nam được hiểu chính xác là:', opts: ['Bỏ qua hoàn toàn mọi thành tựu khoa học, công nghệ và kinh tế thị trường của CNTB', 'Bỏ qua việc xác lập vị trí thống trị của QHSX và KTTT TBCN, nhưng tiếp thu, kế thừa thành tựu KHCN và quản lý của nhân loại dưới CNTB', 'Phát triển đầy đủ CNTB trước rồi mới tiến lên CNXH', 'Chỉ giữ lại KTTT TBCN và xóa bỏ QHSX TBCN'], ans: 1, exp: 'Đại hội IX của Đảng khẳng định rõ: bỏ qua vị trí thống trị của QHSX và KTTT TBCN nhưng tiếp thu, kế thừa thành tựu mà nhân loại đạt được dưới chế độ TBCN, đặc biệt về KHCN.' },
+  { id: 'q36', ch: 3, topic: 'c3-2', level: 'Câu bẫy', q: 'Nguyên nhân TRỰC TIẾP dẫn đến sự ra đời của giai cấp trong lịch sử là:', opts: ['Sự phân công lao động xã hội lần thứ nhất', 'Sự xuất hiện chế độ tư hữu về tư liệu sản xuất', 'Chiến tranh giữa các bộ lạc', 'Sự chênh lệch về thể chất và trí tuệ giữa các cá nhân'], ans: 1, exp: 'Nguyên nhân sâu xa là sự phát triển LLSX; nguyên nhân trực tiếp dẫn tới phân hóa giai cấp là chế độ tư hữu về TLSX.' },
+  { id: 'q37', ch: 3, topic: 'c3-2', level: 'Thông hiểu', q: 'Sự hình thành dân tộc ở phương Đông (trong đó có Việt Nam) có điểm khác biệt căn bản nào so với phương Tây?', opts: ['Hình thành muộn hơn sau khi CNTB đã phát triển cao', 'Hình thành sớm hơn trước khi CNTB ra đời, gắn với yêu cầu trị thủy và chống ngoại xâm', 'Không cần lãnh thổ thống nhất', 'Chỉ dựa trên sự thống nhất tôn giáo'], ans: 1, exp: 'Dân tộc phương Đông (Việt Nam, Trung Quốc...) hình thành sớm hơn trên cơ sở văn hóa, tâm lý, trị thủy và đấu tranh chống ngoại xâm, trước khi CNTB xác lập.' },
+  { id: 'q38', ch: 3, topic: 'c3-3', level: 'Câu bẫy', q: 'Theo Triết học Mác - Lênin, nhà nước ra đời là do:', opts: ['Khế ước xã hội tự nguyện giữa mọi công dân bình đẳng', 'Mâu thuẫn giai cấp phát triển đến mức không thể điều hòa được', 'Nhu cầu tổ chức săn bắt hái lượm thời nguyên thủy', 'Ý muốn sáng tạo của một vị anh hùng kiệt xuất'], ans: 1, exp: 'Lênin khẳng định: Nhà nước là sản phẩm và biểu hiện của những mâu thuẫn giai cấp không thể điều hòa được.' },
+  { id: 'q39', ch: 3, topic: 'c3-3', level: 'Nhận biết', q: 'Vấn đề cơ bản của mọi cuộc cách mạng xã hội là gì?', opts: ['Cải cách giáo dục và văn hóa', 'Giành chính quyền nhà nước', 'Tăng lương và giảm giờ làm cho công nhân', 'Thay đổi người đứng đầu chính phủ bằng đảo chính'], ans: 1, exp: 'Giành chính quyền nhà nước từ tay giai cấp thống trị lỗi thời về tay giai cấp cách mạng là vấn đề cơ bản quyết định thắng lợi của mọi cuộc CMXH.' },
+  { id: 'q40', ch: 3, topic: 'c3-4', level: 'Câu bẫy', q: 'Trong 3 yếu tố cơ bản cấu thành Tồn tại xã hội, yếu tố nào giữ vai trò cơ bản, quyết định nhất?', opts: ['Điều kiện tự nhiên, hoàn cảnh địa lý', 'Dân số và mật độ dân số', 'Phương thức sản xuất vật chất', 'Trình độ giáo dục của dân cư'], ans: 2, exp: 'TTXH gồm: PTSX vật chất, điều kiện tự nhiên và dân số; trong đó PTSX vật chất là yếu tố cơ bản, quyết định nhất.' },
+  { id: 'q41', ch: 3, topic: 'c3-4', level: 'Vận dụng', q: 'Hiện tượng một số tập tục lạc hậu (trọng nam khinh nữ, mê tín dị đoan) vẫn còn tồn tại dù nền kinh tế đã hiện đại hóa minh họa cho tính chất nào của Ý thức xã hội?', opts: ['Ý thức xã hội có thể vượt trước tồn tại xã hội', 'Ý thức xã hội thường lạc hậu hơn tồn tại xã hội', 'Ý thức xã hội có tính kế thừa', 'Ý thức xã hội quyết định tồn tại xã hội'], ans: 1, exp: 'Sức ỳ của thói quen, tập quán truyền thống khiến YTXH thường biến đổi chậm và lạc hậu hơn so với sự biến đổi của TTXH.' },
+  { id: 'q42', ch: 3, topic: 'c3-4', level: 'Thông hiểu', q: 'Tại sao nước Đức thế kỷ XVIII – XIX có nền kinh tế lạc hậu hơn Anh, Pháp nhưng lại đạt đỉnh cao về Triết học cổ điển Đức?', opts: ['Do khí hậu và địa lý nước Đức thuận lợi hơn', 'Do tính kế thừa trong sự phát triển của ý thức xã hội', 'Do tồn tại xã hội không liên quan gì đến ý thức xã hội', 'Do ý thức cá nhân quyết định toàn bộ lịch sử'], ans: 1, exp: 'Nhờ tính kế thừa của YTXH, một dân tộc có kinh tế chưa phát triển nhất vẫn có thể kế thừa tinh hoa tư tưởng của nhân loại để đạt đỉnh cao về triết học, nghệ thuật.' },
+  { id: 'q43', ch: 3, topic: 'c3-5', level: 'Câu bẫy', q: 'Luận điểm của C. Mác: "Trong tính hiện thực của nó, bản chất con người là tổng hòa những quan hệ xã hội" có nghĩa là:', opts: ['Bản chất con người chỉ là phép cộng cơ học các quan hệ bên ngoài', 'Bản chất con người bất biến từ khi sinh ra đến khi chết', 'Bản chất con người hình thành từ sự đan xen, tác động hữu cơ của các quan hệ xã hội cụ thể, lịch sử', 'Con người không có mặt sinh học, chỉ có mặt xã hội'], ans: 2, exp: 'Mác dùng "tổng hòa" để chỉ sự tổng hợp hữu cơ, đan xen của các quan hệ xã hội cụ thể trong lịch sử trên nền tảng thực thể sinh học - xã hội.' },
+  { id: 'q44', ch: 3, topic: 'c3-5', level: 'Thông hiểu', q: 'Theo C. Mác, thực chất cốt lõi của hiện tượng tha hóa con người là gì?', opts: ['Con người đánh mất khả năng giao tiếp ngôn ngữ', 'Lao động của con người bị tha hóa dưới chế độ tư hữu tư liệu sản xuất', 'Con người quá phụ thuộc vào thiên nhiên hoang dã', 'Sự suy thoái đạo đức thuần túy do giáo dục kém'], ans: 1, exp: 'Lao động bị tha hóa là nguồn gốc và thực chất của mọi hình thức tha hóa khác: sản phẩm do người lao động làm ra quay lại thống trị chính họ.' },
+  { id: 'q45', ch: 3, topic: 'c3-5', level: 'Câu bẫy', q: 'Ai là chủ thể sáng tạo chân chính, giữ vai trò quyết định sự phát triển của lịch sử xã hội?', opts: ['Các vị anh hùng, vĩ nhân và lãnh tụ kiệt xuất', 'Giai cấp thống trị nắm quyền lực nhà nước', 'Quần chúng nhân dân', 'Tầng lớp trí thức tinh hoa'], ans: 2, exp: 'Quần chúng nhân dân (với hạt nhân là người lao động sản xuất) là lực lượng quyết định sáng tạo lịch sử. Lãnh tụ có vai trò quan trọng nhưng không thể thay thế quần chúng.' }
+];
+
+// ============================================================================
+// 3. NGÂN HÀNG NHẬN ĐỊNH ĐÚNG / SAI - SĂN BẪY (24 CÂU KINH ĐIỂN)
+// ============================================================================
+const TF_BANK = [
+  { id: 'tf1', ch: 1, stmt: 'Triết học là toàn bộ thế giới quan của con người.', isTrue: false, exp: 'SAI. Triết học không phải là toàn bộ thế giới quan mà là HẠT NHÂN LÝ LUẬN của thế giới quan (thế giới quan còn có huyền thoại, tôn giáo, kinh nghiệm đời thường).' },
+  { id: 'tf2', ch: 1, stmt: 'Cả chủ nghĩa duy vật và chủ nghĩa duy tâm đều thuộc lập trường nhất nguyên luận.', isTrue: true, exp: 'ĐÚNG. Cả hai đều chỉ thừa nhận MỘT bản nguyên duy nhất quyết định thế giới (hoặc vật chất, hoặc tinh thần). Chỉ nhị nguyên luận mới thừa nhận 2 bản nguyên song song.' },
+  { id: 'tf3', ch: 1, stmt: 'Mặt thứ hai của vấn đề cơ bản triết học trả lời câu hỏi: Vật chất hay ý thức có trước?', isTrue: false, exp: 'SAI. Đó là mặt thứ NHẤT (bản thể luận). Mặt thứ hai (nhận thức luận) hỏi con người có khả năng nhận thức được thế giới hay không.' },
+  { id: 'tf4', ch: 1, stmt: 'Phép biện chứng duy vật là sự kế thừa nguyên xi phép biện chứng của Hêghen.', isTrue: false, exp: 'SAI. Mác - Ăngghen kế thừa CÓ PHÊ PHÁN, tước bỏ vỏ thần bí duy tâm của Hegel để xây dựng phép biện chứng trên lập trường duy vật.' },
+  { id: 'tf5', ch: 1, stmt: 'Triết học Mác - Lênin là "khoa học của mọi khoa học", thay thế cho các khoa học cụ thể.', isTrue: false, exp: 'SAI. Quan niệm "khoa học của mọi khoa học" thuộc thời cổ đại. Triết học Mác - Lênin chỉ nghiên cứu quy luật chung nhất và cung cấp thế giới quan, PPL chứ không thay thế khoa học cụ thể.' },
+  { id: 'tf6', ch: 2, stmt: 'Theo định nghĩa vật chất của Lênin, mọi dạng tồn tại khách quan ngoài ý thức (kể cả điện trường, quan hệ sản xuất) đều là vật chất.', isTrue: true, exp: 'ĐÚNG. Tiêu chuẩn duy nhất để xác định vật chất với tư cách phạm trù triết học là "thực tại khách quan", tồn tại độc lập với ý thức.' },
+  { id: 'tf7', ch: 2, stmt: 'Đứng im là tuyệt đối, còn vận động chỉ mang tính tương đối.', isTrue: false, exp: 'SAI NGƯỢC. Vận động là tuyệt đối, vĩnh viễn; đứng im là tương đối, tạm thời trong một quan hệ nhất định.' },
+  { id: 'tf8', ch: 2, stmt: 'Bộ óc người là nguồn gốc quyết định trực tiếp sự ra đời của ý thức.', isTrue: false, exp: 'SAI. Bộ óc người chỉ là nguồn gốc tự nhiên (điều kiện cần). Nguồn gốc xã hội (lao động và ngôn ngữ) mới quyết định trực tiếp.' },
+  { id: 'tf9', ch: 2, stmt: 'Ý thức có thể trực tiếp biến đổi thế giới vật chất mà không cần thông qua hành động thực tiễn.', isTrue: false, exp: 'SAI. Ý thức chỉ tác động trở lại vật chất THÔNG QUA hoạt động thực tiễn của con người.' },
+  { id: 'tf10', ch: 2, stmt: 'Trí tuệ nhân tạo (AI) hiện nay đã có ý thức xã hội hoàn chỉnh như bộ óc con người.', isTrue: false, exp: 'SAI. AI chỉ là hệ thống vật lý - kỹ thuật mô phỏng một số thao tác tư duy do con người tạo ra, không có ý thức xã hội tự thân.' },
+  { id: 'tf11', ch: 2, stmt: 'Cái riêng phong phú hơn cái chung, nhưng cái chung lại sâu sắc hơn cái riêng.', isTrue: true, exp: 'ĐÚNG. Vì cái riêng bao gồm cái chung + cái đơn nhất nên phong phú hơn; cái chung phản ánh mặt ổn định, lặp lại, gắn với bản chất nên sâu sắc hơn.' },
+  { id: 'tf12', ch: 2, stmt: 'Mọi sự kiện xảy ra trước về mặt thời gian đều là nguyên nhân của sự kiện xảy ra sau.', isTrue: false, exp: 'SAI. Nguyên nhân luôn có trước kết quả, nhưng có trước chưa chắc là nguyên nhân (phải có quan hệ sản sinh bên trong).' },
+  { id: 'tf13', ch: 2, stmt: 'Mọi sự thay đổi về lượng đều ngay lập tức làm thay đổi căn bản về chất của sự vật.', isTrue: false, exp: 'SAI. Trong giới hạn của ĐỘ, lượng thay đổi nhưng chất chưa thay đổi căn bản.' },
+  { id: 'tf14', ch: 2, stmt: 'Trong quy luật mâu thuẫn, sự đấu tranh giữa các mặt đối lập là tuyệt đối, còn sự thống nhất là tương đối.', isTrue: true, exp: 'ĐÚNG. Thống nhất gắn với đứng im tương đối, đấu tranh gắn với vận động tuyệt đối.' },
+  { id: 'tf15', ch: 2, stmt: 'Phủ định biện chứng có tính khách quan và tính kế thừa.', isTrue: true, exp: 'ĐÚNG. Đây là 2 đặc trưng cốt lõi phân biệt phủ định biện chứng với phủ định siêu hình (xóa bỏ sạch trơn).' },
+  { id: 'tf16', ch: 2, stmt: 'Hoạt động đọc sách và suy ngẫm trong thư viện là một hình thức của hoạt động thực tiễn.', isTrue: false, exp: 'SAI. Thực tiễn phải là hoạt động VẬT CHẤT - CẢM TÍNH cải tạo tự nhiên và xã hội; đọc sách, suy ngẫm là hoạt động tinh thần/nhận thức.' },
+  { id: 'tf17', ch: 2, stmt: 'Biểu tượng là hình thức cao nhất của giai đoạn nhận thức cảm tính.', isTrue: true, exp: 'ĐÚNG. Nhận thức cảm tính gồm 3 nấc: Cảm giác → Tri giác → Biểu tượng.' },
+  { id: 'tf18', ch: 3, stmt: 'Cơ sở hạ tầng của một xã hội là toàn bộ đường giao thông, cầu cống, điện, trường học và bệnh viện.', isTrue: false, exp: 'SAI (Bẫy kinh điển!). Trong triết học Mác - Lênin, CSHT là toàn bộ các QUAN HỆ SẢN XUẤT hợp thành cơ cấu kinh tế của xã hội.' },
+  { id: 'tf19', ch: 3, stmt: 'Quan hệ sản xuất có thể kìm hãm lực lượng sản xuất ngay cả khi nó bị đẩy lên "vượt trước" giả tạo so với trình độ LLSX.', isTrue: true, exp: 'ĐÚNG. Sự không phù hợp xảy ra theo cả 2 hướng: QHSX lạc hậu hơn HOẶC "vượt trước" duy ý chí so với trình độ LLSX.' },
+  { id: 'tf20', ch: 3, stmt: 'Nhà nước tồn tại vĩnh viễn cùng với sự tồn tại của xã hội loài người.', isTrue: false, exp: 'SAI. Nhà nước là phạm trù lịch sử: không có ở xã hội cộng sản nguyên thủy và sẽ tự tiêu vong trong xã hội cộng sản chủ nghĩa phát triển cao khi không còn giai cấp.' },
+  { id: 'tf21', ch: 3, stmt: 'Trong tồn tại xã hội, phương thức sản xuất vật chất là yếu tố giữ vai trò quyết định nhất.', isTrue: true, exp: 'ĐÚNG. TTXH gồm PTSX vật chất, điều kiện tự nhiên và dân số; trong đó PTSX vật chất quyết định nhất.' },
+  { id: 'tf22', ch: 3, stmt: 'Ý thức xã hội luôn luôn lạc hậu hơn tồn tại xã hội và không bao giờ có thể vượt trước.', isTrue: false, exp: 'SAI. YTXH THƯỜNG lạc hậu hơn, nhưng những tư tưởng khoa học tiên tiến vẫn CÓ THỂ vượt trước TTXH để dự báo tương lai.' },
+  { id: 'tf23', ch: 3, stmt: 'Quần chúng nhân dân là lực lượng quyết định sáng tạo ra lịch sử, còn lãnh tụ đóng vai trò định hướng, thúc đẩy.', isTrue: true, exp: 'ĐÚNG. QCND là chủ thể sáng tạo chân chính quyết định lịch sử; lãnh tụ có vai trò to lớn nhưng không thể thay thế quần chúng.' },
+  { id: 'tf24', ch: 3, stmt: 'Việt Nam quá độ lên CNXH bỏ qua chế độ TBCN nghĩa là không tiếp thu bất kỳ thành tựu nào của CNTB.', isTrue: false, exp: 'SAI. Ta chỉ bỏ qua địa vị thống trị của QHSX và KTTT TBCN, nhưng vẫn kế thừa, tiếp thu mạnh mẽ thành tựu KHCN và quản lý của nhân loại dưới CNTB.' }
+];
+
+// ============================================================================
+// 4. BÀI TẬP GHÉP CẶP KHÁI NIỆM (4 BỘ GHÉP CẶP)
+// ============================================================================
+const MATCH_SETS = [
+  {
+    id: 'm1', title: 'Bộ 1: Trường phái & Khái niệm Chương 1',
+    pairs: [
+      { left: 'Mặt thứ nhất vấn đề cơ bản', right: 'Giải quyết quan hệ có trước/quyết định → CNDV & CNDT' },
+      { left: 'Mặt thứ hai vấn đề cơ bản', right: 'Con người có nhận thức được thế giới không → Khả tri & Bất khả tri' },
+      { left: 'CNDT khách quan (Hegel, Plato)', right: 'Tinh thần khách quan ngoài con người sinh ra thế giới' },
+      { left: 'Phương pháp siêu hình', right: 'Xem xét sự vật cô lập, tĩnh tại, không tự thân phát triển' },
+      { left: 'Bước ngoặt vĩ đại nhất của Mác', right: 'Sáng tạo ra Chủ nghĩa duy vật lịch sử' }
+    ]
+  },
+  {
+    id: 'm2', title: 'Bộ 2: Vị trí 3 Quy luật & 2 Nguyên lý (Chương 2)',
+    pairs: [
+      { left: 'Quy luật Lượng – Chất', right: 'Chỉ ra CÁCH THỨC của sự vận động, phát triển' },
+      { left: 'Quy luật Mâu thuẫn', right: 'HẠT NHÂN — chỉ ra NGUỒN GỐC, ĐỘNG LỰC phát triển' },
+      { left: 'Quy luật Phủ định của phủ định', right: 'Chỉ ra KHUYNH HƯỚNG phát triển theo đường xoáy ốc' },
+      { left: 'Nguyên lý mối liên hệ phổ biến', right: 'Cơ sở của Quan điểm toàn diện & lịch sử - cụ thể' },
+      { left: 'Nguyên lý về sự phát triển', right: 'Cơ sở của Quan điểm phát triển, ủng hộ cái mới' }
+    ]
+  },
+  {
+    id: 'm3', title: 'Bộ 3: Nhận thức & Thực tiễn (Chương 2)',
+    pairs: [
+      { left: 'Sản xuất vật chất', right: 'Hình thức cơ bản, đầu tiên và quan trọng nhất của thực tiễn' },
+      { left: 'Biểu tượng', right: 'Hình thức cao nhất của giai đoạn nhận thức cảm tính' },
+      { left: 'Khái niệm, Phán đoán, Suy luận', right: '3 hình thức của nhận thức lý tính (tư duy trừu tượng)' },
+      { left: 'Thực tiễn đối với chân lý', right: 'Tiêu chuẩn duy nhất để kiểm tra chân lý' },
+      { left: 'Tính cụ thể của chân lý', right: 'Chân lý luôn gắn với điều kiện không gian, thời gian xác định' }
+    ]
+  },
+  {
+    id: 'm4', title: 'Bộ 4: Khái niệm sống còn Chương 3 (CNDV Lịch sử)',
+    pairs: [
+      { left: 'Cơ sở hạ tầng (CSHT)', right: 'Toàn bộ các QHSX hợp thành cơ cấu kinh tế của xã hội' },
+      { left: 'Công cụ lao động', right: 'Yếu tố động nhất, cách mạng nhất trong LLSX' },
+      { left: 'Người lao động', right: 'Yếu tố giữ vai trò quyết định hàng đầu trong LLSX' },
+      { left: 'Phương thức sản xuất vật chất', right: 'Yếu tố giữ vai trò quyết định nhất trong Tồn tại xã hội' },
+      { left: 'Quần chúng nhân dân', right: 'Chủ thể sáng tạo chân chính, quyết định lịch sử' }
+    ]
+  }
+];
+
+// ============================================================================
+// 5. KHO ĐỀ TỰ LUẬN & DÀN Ý ĂN ĐIỂM 10 (10 ĐỀ KINH ĐIỂN HAY RA THI NHẤT)
+// ============================================================================
+const ESSAYS = [
+  {
+    id: 'e1', ch: 1, title: 'Phân tích vấn đề cơ bản của triết học và cơ sở phân định CNDV – CNDT, Khả tri – Bất khả tri',
+    freq: 'Rất hay ra (Chương 1)',
+    keywords: ['Ph. Ăngghen', 'tư duy và tồn tại', 'mặt thứ nhất (bản thể luận)', 'mặt thứ hai (nhận thức luận)', 'nhất nguyên luận', 'nhị nguyên luận', '3 hình thức CNDV', '2 hình thức CNDT'],
+    rubric: [
+      '1. Nêu định nghĩa của Ph. Ăngghen về vấn đề cơ bản của triết học (mối quan hệ giữa tư duy và tồn tại / ý thức và vật chất) và giải thích vì sao chỉ có 1 vấn đề cơ bản.',
+      '2. Phân tích Mặt thứ nhất (Bản thể luận): Cái nào có trước, quyết định cái nào? Trình bày CNDV (3 hình thức: chất phác, siêu hình, biện chứng), CNDT (2 hình thức: chủ quan, khách quan) và Nhị nguyên luận.',
+      '3. Phân tích Mặt thứ hai (Nhận thức luận): Con người có nhận thức được thế giới không? Trình bày Thuyết khả tri, Thuyết bất khả tri (Hume, Kant) và Hoài nghi luận.',
+      '4. Ý nghĩa phương pháp luận & Liên hệ: Xác lập lập trường duy vật biện chứng khoa học trong học tập, nghiên cứu, chống mê tín và duy ý chí.'
+    ],
+    example: 'Liên hệ thực tiễn: Trong giải quyết khủng hoảng doanh nghiệp hay học tập, lập trường duy vật giúp ta đi tìm nguyên nhân thực tế từ số liệu, năng lực và môi trường thay vì đổ lỗi cho số phận hay cầu may (duy tâm).',
+    avoid: 'Tránh nhầm thứ tự mặt thứ nhất và mặt thứ hai; tránh nói CNDT là nhị nguyên luận.'
+  },
+  {
+    id: 'e2', ch: 2, title: 'Phân tích định nghĩa vật chất của V.I. Lênin và rút ra ý nghĩa khoa học, phương pháp luận',
+    freq: 'Kinh điển (Tần suất cực cao)',
+    keywords: ['Chủ nghĩa duy vật và chủ nghĩa kinh nghiệm phê phán (1909)', 'khủng hoảng vật lý học', 'phạm trù triết học', 'thực tại khách quan', 'đem lại trong cảm giác', 'chép lại, chụp lại, phản ánh', 'tồn tại không lệ thuộc vào cảm giác'],
+    rubric: [
+      '1. Hoàn cảnh ra đời: Khủng hoảng vật lý học cuối TK XIX – đầu TK XX (tia X, phóng xạ, điện tử) làm sụp đổ quan niệm vật chất siêu hình cũ; CNDT lợi dụng tuyên bố "vật chất tiêu tan".',
+      '2. Trích dẫn NGUYÊN VĂN định nghĩa vật chất của V.I. Lênin (bắt buộc chuẩn từng chữ).',
+      '3. Phân tích phương pháp định nghĩa đặc biệt (đối lập vật chất với ý thức trên phương diện nhận thức luận) và 3 nội dung cốt lõi (Thực tại khách quan; Tác động gây cảm giác; Cảm giác phản ánh được).',
+      '4. Ý nghĩa khoa học & phương pháp luận: Giải quyết triệt để 2 mặt vấn đề cơ bản; khắc phục hạn chế CNDV cũ; mở đường cho KHTN phát triển; tạo cơ sở xác định dạng vật chất trong xã hội (tồn tại xã hội).'
+    ],
+    example: 'Liên hệ: Nhờ định nghĩa của Lênin, khi khoa học hiện đại phát hiện vật chất tối, năng lượng tối, hạt Higgs hay sóng hấp dẫn, triết học Mác - Lênin không hề bị bác bỏ mà càng được khẳng định vì chúng đều là "thực tại khách quan".',
+    avoid: 'Không trích sai/thiếu chữ trong định nghĩa của Lênin; không đồng nhất vật chất với vật thể cụ thể.'
+  },
+  {
+    id: 'e3', ch: 2, title: 'Phân tích mối quan hệ biện chứng giữa Vật chất và Ý thức. Rút ra ý nghĩa PPL và liên hệ bản thân / Việt Nam',
+    freq: 'Top 1 hay ra thi nhất toàn môn',
+    keywords: ['nguồn gốc, nội dung, bản chất, sự vận động', 'tính độc lập tương đối', 'thông qua hoạt động thực tiễn', 'tôn trọng tính khách quan', 'phát huy tính năng động chủ quan', 'chủ quan duy ý chí', 'thụ động bảo thủ'],
+    rubric: [
+      '1. Khái quát ngắn gọn khái niệm Vật chất và Ý thức.',
+      '2. Vật chất quyết định ý thức trên 4 mặt: Nguồn gốc; Nội dung; Bản chất; Sự vận động và phát triển của ý thức.',
+      '3. Ý thức có tính độc lập tương đối và tác động trở lại vật chất (phải nhấn mạnh: THÔNG QUA HOẠT ĐỘNG THỰC TIỄN của con người, theo 2 chiều thúc đẩy hoặc kìm hãm).',
+      '4. Ý nghĩa PPL: Nguyên tắc tôn trọng tính khách quan kết hợp phát huy tính năng động chủ quan; chống bệnh chủ quan duy ý chí và bệnh thụ động, ỷ lại.',
+      '5. Liên hệ thực tiễn: Công cuộc Đổi mới ở Việt Nam từ Đại hội VI (1986) và liên hệ kế hoạch học tập/lập nghiệp của sinh viên.'
+    ],
+    example: 'Liên hệ Việt Nam: Từ bài học nóng vội duy ý chí thời bao cấp, Đại hội VI (1986) đề ra phương châm "nhìn thẳng vào sự thật, đánh giá đúng sự thật, nói rõ sự thật", chuyển sang kinh tế thị trường định hướng XHCN, phát huy tối đa nguồn lực con người.',
+    avoid: 'Mất điểm nặng nếu quên cụm "thông qua hoạt động thực tiễn" khi nói về tác động trở lại của ý thức.'
+  },
+  {
+    id: 'e4', ch: 2, title: 'Phân tích Nguyên lý về mối liên hệ phổ biến và Nguyên lý về sự phát triển. Ý nghĩa PPL',
+    freq: 'Rất hay ra thi',
+    keywords: ['khách quan, phổ biến, đa dạng phong phú', 'kế thừa', 'đường xoáy ốc', 'quan điểm toàn diện', 'quan điểm lịch sử - cụ thể', 'quan điểm phát triển', 'chống phiến diện, chiết trung, ngụy biện, bảo thủ'],
+    rubric: [
+      '1. Nguyên lý mối liên hệ phổ biến: Khái niệm; 3 tính chất (khách quan, phổ biến, đa dạng phong phú); Ý nghĩa PPL → Quan điểm toàn diện (có trọng tâm, chống phiến diện, chiết trung, ngụy biện) + Quan điểm lịch sử - cụ thể.',
+      '2. Nguyên lý sự phát triển: Khái niệm (phân biệt phát triển với vận động); 4 tính chất (khách quan, phổ biến, kế thừa, đa dạng phong phú); Ý nghĩa PPL → Quan điểm phát triển (nhìn theo xu hướng đi lên, ủng hộ cái mới, chống bảo thủ, định kiến).',
+      '3. Liên hệ thực tiễn trong đánh giá con người, đổi mới giáo dục hoặc phát triển kinh tế bền vững.'
+    ],
+    example: 'Liên hệ sinh viên: Khi đánh giá một môn học hoặc năng lực bản thân, cần nhìn toàn diện (kiến thức, kỹ năng, thái độ — quan điểm toàn diện), đặt trong từng giai đoạn học kỳ (lịch sử - cụ thể) và tin vào khả năng tiến bộ của mình (quan điểm phát triển).',
+    avoid: 'Nhầm lẫn giữa "toàn diện" (có trọng tâm) với "dàn trải, chiết trung" (cào bằng mọi mặt).'
+  },
+  {
+    id: 'e5', ch: 2, title: 'Phân tích Quy luật chuyển hóa từ những thay đổi về lượng thành những thay đổi về chất và ngược lại',
+    freq: 'Cực kỳ hay ra thi',
+    keywords: ['cách thức của sự phát triển', 'Chất', 'Lượng', 'Độ', 'Điểm nút', 'Bước nhảy', 'bước nhảy đột biến/dần dần', 'tả khuynh (nóng vội)', 'hữu khuynh (bảo thủ)'],
+    rubric: [
+      '1. Vị trí quy luật: Chỉ ra CÁCH THỨC của sự vận động, phát triển.',
+      '2. Khái niệm cốt lõi: Chất, Lượng, Độ, Điểm nút, Bước nhảy (và phân loại bước nhảy: đột biến/dần dần, toàn bộ/cục bộ).',
+      '3. Nội dung quy luật (2 chiều): (a) Lượng đổi dẫn đến Chất đổi (tích lũy trong Độ → Điểm nút → Bước nhảy); (b) Chất mới ra đời tác động trở lại Lượng mới (làm thay đổi quy mô, tốc độ vận động của lượng).',
+      '4. Ý nghĩa PPL: Kiên trì tích lũy lượng; dám thực hiện bước nhảy khi chín muồi; chống 2 bệnh Tả khuynh (nóng vội, đốt cháy giai đoạn) và Hữu khuynh (bảo thủ, trì trệ).',
+      '5. Liên hệ: Quá trình học tín chỉ 4 năm đại học (tích lũy lượng kiến thức/tín chỉ → bảo vệ khóa luận/tốt nghiệp là bước nhảy → trở thành cử nhân/kỹ sư có chất mới).'
+    ],
+    example: 'Ví dụ chuẩn: Nước ở áp suất 1 atm biến đổi nhiệt độ (lượng) từ 0°C đến 100°C (Độ) vẫn ở thể lỏng (Chất); đạt 100°C (Điểm nút) diễn ra quá trình hóa hơi (Bước nhảy) chuyển sang thể khí (Chất mới).',
+    avoid: 'Quên chiều tác động ngược lại của Chất mới đối với Lượng mới.'
+  },
+  {
+    id: 'e6', ch: 2, title: 'Phân tích Quy luật thống nhất và đấu tranh của các mặt đối lập (Quy luật Mâu thuẫn)',
+    freq: 'Rất hay ra thi',
+    keywords: ['hạt nhân phép biện chứng', 'nguồn gốc, động lực', 'mặt đối lập', 'mâu thuẫn biện chứng', 'thống nhất (tương đối)', 'đấu tranh (tuyệt đối)', 'phân loại mâu thuẫn', 'không điều hòa mâu thuẫn'],
+    rubric: [
+      '1. Vị trí quy luật: Là HẠT NHÂN của phép biện chứng duy vật, chỉ ra NGUỒN GỐC, ĐỘNG LỰC bên trong của sự phát triển.',
+      '2. Khái niệm: Mặt đối lập và Mâu thuẫn biện chứng.',
+      '3. Nội dung quy luật: Mối quan hệ giữa Thống nhất (tương đối, tạm thời) và Đấu tranh (tuyệt đối) của các mặt đối lập; quá trình phát sinh, phát triển và giải quyết mâu thuẫn tạo nên cái mới.',
+      '4. Phân loại mâu thuẫn: Bên trong/bên ngoài, cơ bản/không cơ bản, chủ yếu/thứ yếu, đối kháng/không đối kháng.',
+      '5. Ý nghĩa PPL & Liên hệ: Tôn trọng mâu thuẫn khách quan, giải quyết mâu thuẫn bằng đấu tranh phù hợp từng loại mâu thuẫn, không né tránh hay điều hòa mâu thuẫn.'
+    ],
+    example: 'Liên hệ: Mâu thuẫn giữa kiến thức đã có của sinh viên với yêu cầu ngày càng cao của thị trường lao động thời AI chính là động lực buộc sinh viên tự học và nâng cấp kỹ năng liên tục.',
+    avoid: 'Đánh đồng "thống nhất" là tuyệt đối; quên phân loại mâu thuẫn để có cách giải quyết phù hợp.'
+  },
+  {
+    id: 'e7', ch: 2, title: 'Phân tích vai trò của Thực tiễn đối với Nhận thức và Con đường biện chứng của sự nhận thức chân lý',
+    freq: 'Rất hay ra thi',
+    keywords: ['hoạt động vật chất - cảm tính', '3 hình thức thực tiễn', 'cơ sở - động lực - mục đích - tiêu chuẩn chân lý', 'trực quan sinh động', 'tư duy trừu tượng', 'quan điểm thực tiễn', 'chống giáo điều, kinh nghiệm chủ nghĩa'],
+    rubric: [
+      '1. Khái niệm thực tiễn và 3 hình thức cơ bản (Sản xuất vật chất [cơ bản nhất], Chính trị - xã hội, Thực nghiệm khoa học).',
+      '2. 4 vai trò của thực tiễn đối với nhận thức: Cơ sở/nguồn gốc; Động lực; Mục đích; Tiêu chuẩn duy nhất kiểm tra chân lý.',
+      '3. Con đường biện chứng của nhận thức (trích câu của Lênin): Nhận thức cảm tính (Cảm giác, Tri giác, Biểu tượng) → Nhận thức lý tính (Khái niệm, Phán đoán, Suy luận) → Quay về thực tiễn kiểm nghiệm.',
+      '4. Ý nghĩa PPL: Quán triệt quan điểm thực tiễn ("học đi đôi với hành"); chống bệnh giáo điều (sách vở) và bệnh kinh nghiệm chủ nghĩa (coi thường lý luận).'
+    ],
+    example: 'Liên hệ: Sinh viên học lập trình hay y khoa không thể chỉ đọc giáo trình (lý tính) mà phải thực hành phòng lab, thực tập doanh nghiệp/bệnh viện (thực tiễn) để kiểm chứng và hoàn thiện năng lực.',
+    avoid: 'Xếp nhầm Biểu tượng vào nhận thức lý tính; quên 1 trong 4 vai trò của thực tiễn.'
+  },
+  {
+    id: 'e8', ch: 3, title: 'Phân tích Quy luật Quan hệ sản xuất phù hợp với trình độ phát triển của Lực lượng sản xuất và vận dụng ở Việt Nam',
+    freq: 'Top 1 Chương 3 (Tần suất siêu cao)',
+    keywords: ['quy luật cơ bản nhất', 'Người lao động (quyết định)', 'Công cụ lao động (động nhất)', '3 mặt QHSX', 'LLSX quyết định QHSX', 'QHSX tác động trở lại (2 hướng)', 'kinh tế nhiều thành phần'],
+    rubric: [
+      '1. Vị trí quy luật: Quy luật cơ bản nhất của sự vận động và phát triển xã hội.',
+      '2. Khái niệm & kết cấu LLSX (Người lao động + TLSX [công cụ lao động là động nhất, KHCN là LLSX trực tiếp]) và QHSX (3 mặt: sở hữu TLSX [quyết định], tổ chức quản lý, phân phối).',
+      '3. Mối quan hệ biện chứng: (a) LLSX quyết định QHSX (nội dung quyết định hình thức); (b) QHSX tác động trở lại LLSX (thúc đẩy khi phù hợp; kìm hãm khi lạc hậu HOẶC vượt trước giả tạo).',
+      '4. Ý nghĩa PPL & Vận dụng ở Việt Nam: Phát triển LLSX (CNH-HĐH, nhân lực chất lượng cao, KHCN, chuyển đổi số) đi đôi với xây dựng QHSX phù hợp (nền kinh tế thị trường định hướng XHCN nhiều thành phần, đa dạng sở hữu).'
+    ],
+    example: 'Liên hệ Việt Nam: Từ 1986 đến nay, việc thừa nhận kinh tế tư nhân là một động lực quan trọng, cho phép đa dạng hóa hình thức sở hữu và phân phối theo lao động/hiệu quả kinh tế đã giải phóng mạnh mẽ LLSX, đưa Việt Nam thoát khỏi khủng hoảng.',
+    avoid: 'Quên chiều QHSX "vượt trước giả tạo" cũng kìm hãm LLSX; nhầm vai trò Người lao động và Công cụ lao động.'
+  },
+  {
+    id: 'e9', ch: 3, title: 'Phân tích mối quan hệ biện chứng giữa Cơ sở hạ tầng (CSHT) và Kiến trúc thượng tầng (KTTT). Liên hệ Việt Nam',
+    freq: 'Rất hay ra thi (Chương 3)',
+    keywords: ['tổng hợp các QHSX', 'QHSX thống trị', 'hình thái YTXH + thiết chế tương ứng', 'Nhà nước (quyền lực nhất)', 'CSHT quyết định KTTT', 'KTTT tác động trở lại', 'đổi mới kinh tế + đổi mới chính trị'],
+    rubric: [
+      '1. Khái niệm & kết cấu CSHT (toàn bộ các QHSX: thống trị, tàn dư, mầm mống) và KTTT (các hình thái YTXH + thiết chế chính trị - xã hội tương ứng, trong đó Nhà nước mạnh nhất).',
+      '2. CSHT quyết định KTTT: Quyết định nguồn gốc, cơ cấu, tính chất và sự biến đổi của KTTT.',
+      '3. Tính độc lập tương đối và sự tác động trở lại của KTTT đối với CSHT: Chức năng bảo vệ/củng cố CSHT; thúc đẩy nếu cùng chiều quy luật kinh tế, kìm hãm nếu ngược chiều.',
+      '4. Ý nghĩa PPL & Liên hệ Việt Nam: Giải quyết đúng quan hệ giữa kinh tế và chính trị; đổi mới kinh tế là trung tâm đồng thời từng bước đổi mới hệ thống chính trị, tinh gọn bộ máy, xây dựng Nhà nước pháp quyền XHCN.'
+    ],
+    example: 'Liên hệ: Việc Quốc hội Việt Nam liên tục hoàn thiện Luật Đất đai, Luật Doanh nghiệp, Luật Giao dịch điện tử (KTTT) giúp tháo gỡ điểm nghẽn thể chế, thúc đẩy kinh tế số và đầu tư (CSHT) phát triển mạnh mẽ.',
+    avoid: 'TUYỆT ĐỐI không định nghĩa CSHT là đường sá, cầu cống, điện nước!'
+  },
+  {
+    id: 'e10', ch: 3, title: 'Phân tích mối quan hệ biện chứng giữa Tồn tại xã hội và Ý thức xã hội, đặc biệt là tính độc lập tương đối của YTXH',
+    freq: 'Rất hay ra thi (Chương 3)',
+    keywords: ['TTXH (3 yếu tố)', 'PTSX quyết định nhất', 'Tâm lý xã hội & Hệ tư tưởng', 'TTXH quyết định YTXH', '5 biểu hiện tính độc lập tương đối', 'lạc hậu', 'vượt trước', 'kế thừa', 'tác động qua lại', 'tác động trở lại'],
+    rubric: [
+      '1. Khái niệm & kết cấu TTXH (3 yếu tố: PTSX [quyết định], điều kiện tự nhiên, dân số) và YTXH (Tâm lý xã hội, Hệ tư tưởng, 7 hình thái YTXH).',
+      '2. TTXH quyết định YTXH: Nguồn gốc, nội dung, sự biến đổi.',
+      '3. Phân tích đầy đủ 5 biểu hiện Tính độc lập tương đối của YTXH: (1) Thường lạc hậu hơn TTXH; (2) Có thể vượt trước TTXH; (3) Có tính kế thừa; (4) Tác động qua lại giữa các hình thái YTXH; (5) Tác động trở lại TTXH.',
+      '4. Ý nghĩa PPL & Liên hệ: Xây dựng đời sống văn hóa, tư tưởng mới phải gắn với phát triển kinh tế; kiên trì xóa bỏ hủ tục lạc hậu; kế thừa bản sắc dân tộc kết hợp tiếp thu tinh hoa văn hóa nhân loại.'
+    ],
+    example: 'Liên hệ: Quá trình xây dựng nền văn hóa Việt Nam tiên tiến, đậm đà bản sắc dân tộc chính là vận dụng trực tiếp tính kế thừa và sự tác động tích cực của YTXH để tạo sức mạnh mềm thúc đẩy phát triển đất nước.',
+    avoid: 'Liệt kê thiếu 1 trong 5 biểu hiện tính độc lập tương đối của YTXH.'
+  }
+];
+
+// ============================================================================
+// 6. FLASHCARDS SIÊU TỐC (30 THẺ CỐT LÕI)
+// ============================================================================
+const FLASHCARDS = [
+  { id: 'f1', ch: 1, front: 'Vấn đề cơ bản của mọi triết học là gì?', back: 'Mối quan hệ giữa tư duy và tồn tại (giữa ý thức và vật chất). Gồm 2 mặt: Bản thể luận (cái nào có trước/quyết định) và Nhận thức luận (con người có nhận thức được thế giới không).' },
+  { id: 'f2', ch: 1, front: '3 hình thức lịch sử của Chủ nghĩa duy vật?', back: '1. CNDV chất phác (cổ đại)\n2. CNDV siêu hình (TK XVII–XVIII)\n3. CNDV biện chứng (Mác – Ăngghen sáng lập, Lênin phát triển).' },
+  { id: 'f3', ch: 1, front: 'Phân biệt CNDT chủ quan và CNDT khách quan?', back: '• CNDT chủ quan: Ý thức con người có trước, sinh ra thế giới (Berkeley, Hume).\n• CNDT khách quan: Tinh thần khách quan bên ngoài con người có trước ("Ý niệm tuyệt đối" - Hegel, "Ý niệm" - Plato).' },
+  { id: 'f4', ch: 1, front: '3 phát minh KHTN thế kỷ XIX làm tiền đề cho Triết học Mác?', back: '1. Định luật bảo toàn và chuyển hóa năng lượng\n2. Học thuyết tế bào\n3. Học thuyết tiến hóa của Darwin.' },
+  { id: 'f5', ch: 1, front: 'Bước ngoặt cách mạng vĩ đại nhất của Mác – Ăngghen trong triết học?', back: 'Sáng tạo ra CHỦ NGHĨA DUY VẬT LỊCH SỬ — mở rộng lập trường duy vật biện chứng vào nghiên cứu lịch sử xã hội, khắc phục "duy vật nửa vời".' },
+  { id: 'f6', ch: 1, front: '2 chức năng cơ bản của Triết học Mác - Lênin?', back: '1. Chức năng thế giới quan (thế giới quan duy vật biện chứng)\n2. Chức năng phương pháp luận (phương pháp luận biện chứng duy vật).' },
+  { id: 'f7', ch: 2, front: 'Định nghĩa Vật chất của V.I. Lênin (nguyên văn)?', back: '“Vật chất là một phạm trù triết học dùng để chỉ thực tại khách quan được đem lại cho con người trong cảm giác, được cảm giác của chúng ta chép lại, chụp lại, phản ánh, và tồn tại không lệ thuộc vào cảm giác.”' },
+  { id: 'f8', ch: 2, front: 'Phương thức tồn tại và Hình thức tồn tại của vật chất?', back: '• Phương thức tồn tại: VẬN ĐỘNG (tuyệt đối, vĩnh viễn; đứng im là tương đối, tạm thời).\n• Hình thức tồn tại: KHÔNG GIAN (3 chiều) và THỜI GIAN (1 chiều).' },
+  { id: 'f9', ch: 2, front: '5 hình thức vận động cơ bản của vật chất (từ thấp đến cao)?', back: 'Cơ học → Vật lý → Hóa học → Sinh học → Xã hội.' },
+  { id: 'f10', ch: 2, front: 'Nguồn gốc tự nhiên và nguồn gốc xã hội của ý thức?', back: '• Tự nhiên (điều kiện cần): Bộ óc người + Thế giới khách quan (phản ánh).\n• Xã hội (QUYẾT ĐỊNH trực tiếp): Lao động + Ngôn ngữ.' },
+  { id: 'f11', ch: 2, front: '4 phương diện Vật chất quyết định Ý thức?', back: '1. Quyết định nguồn gốc\n2. Quyết định nội dung\n3. Quyết định bản chất\n4. Quyết định sự vận động, phát triển của ý thức.' },
+  { id: 'f12', ch: 2, front: 'Nguyên tắc PPL từ mối quan hệ Vật chất – Ý thức?', back: 'Tôn trọng tính khách quan kết hợp phát huy tính năng động chủ quan. Chống bệnh chủ quan duy ý chí và bệnh thụ động, ỷ lại, bảo thủ.' },
+  { id: 'f13', ch: 2, front: '2 Nguyên lý của Phép biện chứng duy vật?', back: '1. Nguyên lý về mối liên hệ phổ biến → Quan điểm toàn diện & lịch sử - cụ thể.\n2. Nguyên lý về sự phát triển → Quan điểm phát triển.' },
+  { id: 'f14', ch: 2, front: 'Cái riêng vs Cái chung: Cái nào phong phú hơn, cái nào sâu sắc hơn?', back: 'Cái riêng PHONG PHÚ hơn cái chung (Cái riêng = Cái chung + Cái đơn nhất).\nCái chung SÂU SẮC hơn cái riêng (phản ánh mặt ổn định, bản chất).' },
+  { id: 'f15', ch: 2, front: 'Vị trí của 3 Quy luật cơ bản Phép biện chứng duy vật?', back: '• Lượng – Chất: CÁCH THỨC phát triển.\n• Mâu thuẫn (Hạt nhân): NGUỒN GỐC, ĐỘNG LỰC.\n• Phủ định của phủ định: KHUYNH HƯỚNG (đường xoáy ốc).' },
+  { id: 'f16', ch: 2, front: 'Phân biệt Độ, Điểm nút và Bước nhảy?', back: '• Độ: Khoảng giới hạn lượng đổi chưa làm chất đổi.\n• Điểm nút: Điểm giới hạn lượng tích lũy đủ để đổi chất.\n• Bước nhảy: Quá trình chuyển hóa từ chất cũ sang chất mới.' },
+  { id: 'f17', ch: 2, front: '2 đặc trưng của Phủ định biện chứng?', back: '1. Tính khách quan (tự thân phủ định do mâu thuẫn bên trong)\n2. Tính kế thừa (giữ lại yếu tố tích cực, lọc bỏ tiêu cực).' },
+  { id: 'f18', ch: 2, front: '3 hình thức cơ bản của Hoạt động thực tiễn?', back: '1. Sản xuất vật chất (CƠ BẢN NHẤT)\n2. Chính trị - xã hội\n3. Thực nghiệm khoa học.' },
+  { id: 'f19', ch: 2, front: '4 vai trò của Thực tiễn đối với Nhận thức?', back: '1. Cơ sở, nguồn gốc\n2. Động lực\n3. Mục đích\n4. Tiêu chuẩn duy nhất kiểm tra chân lý.' },
+  { id: 'f20', ch: 2, front: '2 giai đoạn của quá trình nhận thức (và 3 hình thức mỗi giai đoạn)?', back: '• Nhận thức cảm tính: Cảm giác → Tri giác → Biểu tượng.\n• Nhận thức lý tính: Khái niệm → Phán đoán → Suy luận.' },
+  { id: 'f21', ch: 3, front: 'Kết cấu của Lực lượng sản xuất (LLSX)?', back: '1. Người lao động (QUYẾT ĐỊNH hàng đầu)\n2. Tư liệu sản xuất = Đối tượng lao động + Tư liệu lao động (Công cụ lao động là ĐỘNG NHẤT, CÁCH MẠNG NHẤT).' },
+  { id: 'f22', ch: 3, front: '3 mặt của Quan hệ sản xuất (QHSX)?', back: '1. Quan hệ sở hữu TLSX (QUYẾT ĐỊNH)\n2. Quan hệ tổ chức, quản lý sản xuất\n3. Quan hệ phân phối sản phẩm lao động.' },
+  { id: 'f23', ch: 3, front: 'Cơ sở hạ tầng (CSHT) trong Triết học Mác - Lênin là gì?', back: 'Là toàn bộ những QUAN HỆ SẢN XUẤT (thống trị, tàn dư, mầm mống) hợp thành cơ cấu kinh tế của một xã hội nhất định. (KHÔNG phải cầu đường, điện nước!).' },
+  { id: 'f24', ch: 3, front: 'Kiến trúc thượng tầng (KTTT) gồm những gì? Bộ phận nào mạnh nhất?', back: 'Gồm toàn bộ hình thái ý thức xã hội (chính trị, pháp quyền, đạo đức, tôn giáo...) và các thiết chế tương ứng (Nhà nước, đảng phái, giáo hội...). NHÀ NƯỚC là bộ phận quyền lực mạnh nhất.' },
+  { id: 'f25', ch: 3, front: 'Nguyên nhân trực tiếp ra đời Giai cấp và Nhà nước?', back: '• Giai cấp: Chế độ TƯ HỮU về tư liệu sản xuất.\n• Nhà nước: Mâu thuẫn giai cấp phát triển đến mức KHÔNG THỂ ĐIỀU HÒA ĐƯỢC.' },
+  { id: 'f26', ch: 3, front: '3 đặc trưng cơ bản của Nhà nước?', back: '1. Quản lý cư dân theo lãnh thổ\n2. Bộ máy quyền lực chuyên nghiệp mang tính cưỡng chế\n3. Hệ thống thuế khóa.' },
+  { id: 'f27', ch: 3, front: '3 yếu tố cơ bản của Tồn tại xã hội (TTXH)?', back: '1. Phương thức sản xuất vật chất (QUYẾT ĐỊNH NHẤT)\n2. Điều kiện tự nhiên, hoàn cảnh địa lý\n3. Dân số và mật độ dân số.' },
+  { id: 'f28', ch: 3, front: '5 biểu hiện Tính độc lập tương đối của Ý thức xã hội?', back: '1. Thường lạc hậu hơn TTXH\n2. Có thể vượt trước TTXH\n3. Có tính kế thừa\n4. Tác động qua lại giữa các hình thái YTXH\n5. Tác động trở lại TTXH.' },
+  { id: 'f29', ch: 3, front: 'Luận điểm kinh điển của C. Mác về bản chất con người?', back: '“Trong tính hiện thực của nó, bản chất con người là tổng hòa những quan hệ xã hội.” (Con người là thực thể thống nhất sinh học – xã hội).' },
+  { id: 'f30', ch: 3, front: 'Thực chất của hiện tượng tha hóa con người theo C. Mác?', back: 'Là LAO ĐỘNG của con người bị tha hóa dưới chế độ tư hữu TLSX: sản phẩm do người lao động tạo ra trở thành lực lượng xa lạ thống trị ngược lại chính họ.' }
+];
+
+// ============================================================================
+// 7. STATE & PERSISTENCE (SANDBOX-SAFE LOCALSTORAGE)
+// ============================================================================
+const STORAGE_KEY = 'mln_study_hub_v1';
+const defaultProgress = {
+  completedTopics: [],
+  mcqResults: {},      // { qId: { selected, correct } }
+  tfResults: {},       // { tfId: { selected, correct } }
+  masteredTraps: [],   // [ 'c1-1-0', ... ]
+  knownCards: [],      // [ 'f1', ... ]
+  essayChecks: {},     // { 'e1-0': true }
+  essayNotes: {},      // { e1: '...' }
+  mockHistory: [],     // [ { date, score, total, pct } ]
+  darkMode: false
+};
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(defaultProgress));
+    return { ...JSON.parse(JSON.stringify(defaultProgress)), ...JSON.parse(raw) };
+  } catch (e) {
+    return JSON.parse(JSON.stringify(defaultProgress));
+  }
+}
+
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+  } catch (e) {}
+}
+
+const state = {
+  view: 'dashboard',
+  activeTopicId: 'c1-1',
+  topicSubTab: 'core', // core | advanced | traps | quick
+  practiceMode: 'mcq', // mcq | tf | match | mock
+  mcqFilterCh: 'all',
+  mcqFilterLevel: 'all',
+  mcqOnlyWrong: false,
+  tfFilterCh: 'all',
+  matchSetId: 'm1',
+  matchSelectedLeft: null,
+  matchMatched: [],
+  matchWrongPair: null,
+  matchRightOrder: [],
+  mockActive: null, // { questions, answers, timeLeft, timerId, submitted, total }
+  essayFilterCh: 'all',
+  activeEssayId: 'e1',
+  trapFilterCh: 'all',
+  fcFilterCh: 'all',
+  fcIndex: 0,
+  fcFlipped: false,
+  fcOrder: FLASHCARDS.map(f => f.id),
+  progress: loadProgress()
+};
+
+// ============================================================================
+// 8. UTILITIES
+// ============================================================================
+function showToast(msg, type = 'info') {
+  const box = document.getElementById('toastBox');
+  const el = document.createElement('div');
+  const colors = type === 'success' ? 'bg-emerald-700 text-white' : type === 'warn' ? 'bg-amber-600 text-white' : 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900';
+  el.className = `pointer-events-auto px-4 py-2.5 rounded-xl text-xs font-semibold shadow-lg fade-in ${colors}`;
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 250); }, 2400);
+}
+
+function getAllTraps() {
+  const list = [];
+  TOPICS.forEach(t => {
+    t.traps.forEach((tr, idx) => {
+      list.push({ id: `${t.id}-${idx}`, ch: t.chapter, topicId: t.id, topicCode: t.code, topicTitle: t.title, ...tr });
+    });
+  });
+  return list;
+}
+
+function getStats() {
+  const totalTopics = TOPICS.length;
+  const doneTopics = state.progress.completedTopics.length;
+  const mcqAnswered = Object.keys(state.progress.mcqResults).length;
+  const mcqCorrect = Object.values(state.progress.mcqResults).filter(r => r.correct).length;
+  const mcqWrong = mcqAnswered - mcqCorrect;
+  const tfAnswered = Object.keys(state.progress.tfResults).length;
+  const tfCorrect = Object.values(state.progress.tfResults).filter(r => r.correct).length;
+  const totalTraps = getAllTraps().length;
+  const masteredTraps = state.progress.masteredTraps.length;
+  const knownCards = state.progress.knownCards.length;
+  const accTotal = mcqAnswered + tfAnswered;
+  const accCorrect = mcqCorrect + tfCorrect;
+  const accuracy = accTotal > 0 ? Math.round((accCorrect / accTotal) * 100) : 0;
+  return { totalTopics, doneTopics, mcqAnswered, mcqCorrect, mcqWrong, tfAnswered, tfCorrect, totalTraps, masteredTraps, knownCards, accuracy };
+}
+
+function shuffleArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function applyDarkMode() {
+  document.documentElement.classList.toggle('dark', !!state.progress.darkMode);
+}
+
+// ============================================================================
+// 9. NAVIGATION & RENDER ROUTER
+// ============================================================================
+function setView(view, extra = {}) {
+  if (state.mockActive && state.mockActive.timerId && view !== 'practice') {
+    clearInterval(state.mockActive.timerId);
+    state.mockActive.timerId = null;
+  }
+  state.view = view;
+  Object.assign(state, extra);
+  document.getElementById('mobileNavDrawer').classList.add('hidden');
+  updateNavActive();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateNavActive() {
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    const active = btn.dataset.nav === state.view;
+    btn.className = active
+      ? 'nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 bg-white dark:bg-stone-700 text-crimson-700 dark:text-crimson-300 shadow-xs'
+      : 'nav-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white';
+  });
+}
+
+function render() {
+  const main = document.getElementById('appMain');
+  if (state.view === 'dashboard') main.innerHTML = renderDashboard();
+  else if (state.view === 'study') main.innerHTML = renderStudy();
+  else if (state.view === 'practice') main.innerHTML = renderPractice();
+  else if (state.view === 'essays') main.innerHTML = renderEssays();
+  else if (state.view === 'traps') main.innerHTML = renderTraps();
+  else if (state.view === 'flashcards') main.innerHTML = renderFlashcards();
+  if (window.lucide) lucide.createIcons();
+}
+
+// ============================================================================
+// 10. VIEW: DASHBOARD
+// ============================================================================
+function renderDashboard() {
+  const st = getStats();
+  const chapters = [
+    { ch: 1, name: 'Chương 1: Khái luận Triết học & Triết học Mác - Lênin', desc: 'Vấn đề cơ bản, CNDV/CNDT, Biện chứng & Siêu hình, Vai trò triết học Mác - Lênin' },
+    { ch: 2, name: 'Chương 2: Chủ nghĩa Duy vật Biện chứng', desc: 'Vật chất & Ý thức, 2 Nguyên lý, 6 Cặp phạm trù, 3 Quy luật, Lý luận nhận thức' },
+    { ch: 3, name: 'Chương 3: Chủ nghĩa Duy vật Lịch sử', desc: 'HTKT-XH, LLSX-QHSX, CSHT-KTTT, Giai cấp & Dân tộc, Nhà nước, YTXH, Con người' }
+  ];
+
+  return `
+    <div class="space-y-6 fade-in">
+      <!-- Hero -->
+      <section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-crimson-800 via-crimson-900 to-stone-900 text-white p-6 sm:p-8 shadow-md">
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 text-[11px] font-semibold uppercase tracking-wider mb-3">
+            <i data-lucide="award" class="w-3.5 h-3.5"></i> Lộ trình chinh phục điểm A+ / 10 điểm
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">Trung tâm Ôn luyện Triết học Mác - Lênin</h2>
+          <p class="text-sm sm:text-base text-crimson-100 mt-2 leading-relaxed">
+            Phủ kín 100% kiến thức 3 chương chuẩn Giáo trình Bộ GD&ĐT (2021) — kết hợp phần <strong>Nâng cao & Liên hệ thực tiễn</strong>, <strong>Cảnh báo Bẫy dễ sai</strong>, <strong>69+ câu Trắc nghiệm & Đúng/Sai</strong>, <strong>Ghép cặp</strong>, <strong>10 Dàn ý Tự luận điểm 10</strong> và <strong>30 Flashcards</strong>.
+          </p>
+          <div class="flex flex-wrap gap-2.5 mt-5">
+            <button data-action="go-study" class="px-4 py-2.5 rounded-xl bg-white text-crimson-900 font-bold text-sm hover:bg-crimson-50 transition flex items-center gap-2 shadow-xs">
+              <i data-lucide="book-open" class="w-4 h-4"></i> Học Lý thuyết ngay
+            </button>
+            <button data-action="start-mock-20" class="px-4 py-2.5 rounded-xl bg-amber-400 text-stone-950 font-bold text-sm hover:bg-amber-300 transition flex items-center gap-2 shadow-xs">
+              <i data-lucide="timer" class="w-4 h-4"></i> Thi thử 20 câu (15 phút)
+            </button>
+            <button data-action="go-traps" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-semibold text-sm transition flex items-center gap-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i> Xem ${st.totalTraps} Bẫy dễ sai
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- KPI Cards -->
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-stone-500 dark:text-stone-400 text-xs font-medium">
+            <span>Tiến độ Chuyên đề</span>
+            <i data-lucide="book-marked" class="w-4 h-4 text-crimson-600"></i>
+          </div>
+          <div class="mt-2 text-2xl font-extrabold">${st.doneTopics}<span class="text-sm font-medium text-stone-400">/${st.totalTopics}</span></div>
+          <div class="w-full h-1.5 bg-stone-100 dark:bg-stone-800 rounded-full mt-2.5 overflow-hidden">
+            <div class="h-full bg-crimson-700 rounded-full" style="width:${Math.round((st.doneTopics / st.totalTopics) * 100)}%"></div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-stone-500 dark:text-stone-400 text-xs font-medium">
+            <span>Tỷ lệ làm đúng</span>
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+          </div>
+          <div class="mt-2 text-2xl font-extrabold text-emerald-700 dark:text-emerald-400">${st.accuracy}%</div>
+          <p class="text-[11px] text-stone-500 mt-1">Đã làm ${st.mcqAnswered}/${MCQ_BANK.length} MCQ • ${st.tfAnswered}/${TF_BANK.length} Đúng/Sai</p>
+        </div>
+
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-stone-500 dark:text-stone-400 text-xs font-medium">
+            <span>Bẫy đã né được</span>
+            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-600"></i>
+          </div>
+          <div class="mt-2 text-2xl font-extrabold text-amber-600 dark:text-amber-400">${st.masteredTraps}<span class="text-sm font-medium text-stone-400">/${st.totalTraps}</span></div>
+          <p class="text-[11px] text-stone-500 mt-1">Câu làm sai cần ôn: <strong class="text-crimson-600">${st.mcqWrong}</strong></p>
+        </div>
+
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4">
+          <div class="flex items-center justify-between text-stone-500 dark:text-stone-400 text-xs font-medium">
+            <span>Flashcards đã thuộc</span>
+            <i data-lucide="layers" class="w-4 h-4 text-indigo-600"></i>
+          </div>
+          <div class="mt-2 text-2xl font-extrabold text-indigo-700 dark:text-indigo-400">${st.knownCards}<span class="text-sm font-medium text-stone-400">/${FLASHCARDS.length}</span></div>
+          <p class="text-[11px] text-stone-500 mt-1">10 đề Tự luận kèm Rubric điểm 10</p>
+        </div>
+      </section>
+
+      <!-- 3 Chapters Roadmap -->
+      <section class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold">Lộ trình 3 Chương — 10 Chuyên đề chuẩn</h3>
+          <button data-action="open-reset" class="text-xs text-stone-500 hover:text-crimson-600 font-medium flex items-center gap-1">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Đặt lại tiến độ
+          </button>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4">
+          ${chapters.map(c => {
+            const cTopics = TOPICS.filter(t => t.chapter === c.ch);
+            const cDone = cTopics.filter(t => state.progress.completedTopics.includes(t.id)).length;
+            const pct = Math.round((cDone / cTopics.length) * 100);
+            return `
+              <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-crimson-50 dark:bg-crimson-900/40 text-crimson-700 dark:text-crimson-300">CHƯƠNG ${c.ch}</span>
+                    <span class="text-xs font-semibold text-stone-500">${cDone}/${cTopics.length} bài</span>
+                  </div>
+                  <h4 class="font-bold text-sm sm:text-base leading-snug">${c.name}</h4>
+                  <p class="text-xs text-stone-500 dark:text-stone-400 mt-1">${c.desc}</p>
+                  <div class="w-full h-1.5 bg-stone-100 dark:bg-stone-800 rounded-full mt-3 overflow-hidden">
+                    <div class="h-full bg-crimson-700 rounded-full" style="width:${pct}%"></div>
+                  </div>
+                  <ul class="mt-4 space-y-1.5">
+                    ${cTopics.map(t => {
+                      const done = state.progress.completedTopics.includes(t.id);
+                      return `
+                        <li>
+                          <button data-open-topic="${t.id}" class="w-full text-left px-2.5 py-2 rounded-lg text-xs hover:bg-stone-100 dark:hover:bg-stone-800 transition flex items-center justify-between gap-2">
+                            <span class="flex items-center gap-2 min-w-0">
+                              <span class="w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-emerald-600 text-white' : 'border border-stone-300 dark:border-stone-600 text-transparent'}">
+                                <i data-lucide="check" class="w-2.5 h-2.5"></i>
+                              </span>
+                              <span class="truncate font-medium"><strong>${t.code}</strong> ${t.title}</span>
+                            </span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-stone-400 shrink-0"></i>
+                          </button>
+                        </li>
+                      `;
+                    }).join('')}
+                  </ul>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </section>
+
+      <!-- Mock Exam History -->
+      ${state.progress.mockHistory.length > 0 ? `
+        <section class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5">
+          <h3 class="text-sm font-bold mb-3 flex items-center gap-2"><i data-lucide="history" class="w-4 h-4 text-crimson-600"></i> Lịch sử Thi thử gần đây</h3>
+          <div class="grid sm:grid-cols-3 gap-2.5">
+            ${state.progress.mockHistory.slice(-6).reverse().map(h => `
+              <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700 flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-semibold">${h.score}/${h.total} câu đúng</div>
+                  <div class="text-[11px] text-stone-500">${h.date}</div>
+                </div>
+                <div class="text-lg font-extrabold ${h.pct >= 80 ? 'text-emerald-600' : h.pct >= 50 ? 'text-amber-600' : 'text-crimson-600'}">${(h.pct / 10).toFixed(1)}đ</div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+      ` : ''}
+    </div>
+  `;
+}
+
+// ============================================================================
+// 11. VIEW: STUDY (LÝ THUYẾT CHI TIẾT + NÂNG CAO + BẪY + BÀI TẬP NHANH)
+// ============================================================================
+function renderStudy() {
+  const topic = TOPICS.find(t => t.id === state.activeTopicId) || TOPICS[0];
+  const isDone = state.progress.completedTopics.includes(topic.id);
+  const topicMcqs = MCQ_BANK.filter(q => q.topic === topic.id);
+
+  return `
+    <div class="grid lg:grid-cols-12 gap-5 fade-in">
+      <!-- Topic Sidebar -->
+      <aside class="lg:col-span-4 xl:col-span-3 space-y-3">
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 lg:sticky lg:top-20">
+          <div class="text-xs font-bold uppercase tracking-wider text-stone-500 px-2 mb-2">Mục lục 3 Chương</div>
+          <div class="space-y-3 max-h-[65vh] overflow-y-auto scrollbar-thin pr-1">
+            ${[1, 2, 3].map(ch => `
+              <div>
+                <div class="text-[11px] font-bold text-crimson-700 dark:text-crimson-400 px-2 mb-1">CHƯƠNG ${ch}</div>
+                <div class="space-y-1">
+                  ${TOPICS.filter(t => t.chapter === ch).map(t => {
+                    const active = t.id === topic.id;
+                    const done = state.progress.completedTopics.includes(t.id);
+                    return `
+                      <button data-select-topic="${t.id}" class="w-full text-left px-2.5 py-2 rounded-xl text-xs transition flex items-start gap-2 ${active ? 'bg-crimson-50 dark:bg-crimson-900/40 text-crimson-800 dark:text-crimson-200 font-bold' : 'hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300'}">
+                        <span class="mt-0.5 w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-emerald-600 text-white' : 'border border-stone-300 dark:border-stone-600 text-transparent'}">
+                          <i data-lucide="check" class="w-2.5 h-2.5"></i>
+                        </span>
+                        <span class="leading-snug">${t.code}. ${t.title}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Topic Content -->
+      <section class="lg:col-span-8 xl:col-span-9 space-y-4">
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 sm:p-6">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-crimson-100 dark:bg-crimson-900/50 text-crimson-800 dark:text-crimson-200">Chương ${topic.chapter} • Mục ${topic.code}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">${topic.weight}</span>
+              </div>
+              <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">${topic.title}</h2>
+              <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1">${topic.subtitle}</p>
+            </div>
+            <button data-toggle-done="${topic.id}" class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 ${isDone ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'}">
+              <i data-lucide="${isDone ? 'check-circle-2' : 'circle'}" class="w-4 h-4"></i>
+              ${isDone ? 'Đã thuộc chuyên đề này' : 'Đánh dấu đã thuộc'}
+            </button>
+          </div>
+
+          <!-- Sub-tabs -->
+          <div class="flex flex-wrap gap-1.5 mt-5 pt-4 border-t border-stone-200 dark:border-stone-800">
+            ${[
+              { id: 'core', label: 'Kiến thức cốt lõi', icon: 'book-open' },
+              { id: 'advanced', label: 'Nâng cao & Liên hệ', icon: 'sparkles' },
+              { id: 'traps', label: `Bẫy dễ sai (${topic.traps.length})`, icon: 'alert-triangle' },
+              { id: 'quick', label: `Luyện tập nhanh (${topicMcqs.length})`, icon: 'zap' }
+            ].map(tab => `
+              <button data-topic-tab="${tab.id}" class="px-3.5 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 ${state.topicSubTab === tab.id ? 'bg-crimson-700 text-white shadow-xs' : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'}">
+                <i data-lucide="${tab.icon}" class="w-3.5 h-3.5"></i> ${tab.label}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Tab Body -->
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 sm:p-6">
+          ${state.topicSubTab === 'core' ? renderTopicCore(topic) : ''}
+          ${state.topicSubTab === 'advanced' ? renderTopicAdvanced(topic) : ''}
+          ${state.topicSubTab === 'traps' ? renderTopicTraps(topic) : ''}
+          ${state.topicSubTab === 'quick' ? renderTopicQuickQuiz(topicMcqs) : ''}
+        </div>
+      </section>
+    </div>
+  `;
+}
+
+function renderTopicCore(topic) {
+  return `
+    <div class="space-y-6">
+      ${topic.core.map(sec => `
+        <div class="space-y-3">
+          <h3 class="text-base sm:text-lg font-bold text-crimson-800 dark:text-crimson-300 border-l-4 border-crimson-700 pl-3">${sec.heading}</h3>
+          ${sec.quote ? `
+            <blockquote class="p-4 rounded-xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-sm italic font-medium text-stone-800 dark:text-amber-100 leading-relaxed">
+              ${sec.quote}
+            </blockquote>
+          ` : ''}
+          ${sec.points ? `
+            <ul class="space-y-2.5 text-sm leading-relaxed text-stone-700 dark:text-stone-300">
+              ${sec.points.map(p => `<li class="flex gap-2.5"><span class="text-crimson-600 font-bold mt-0.5">•</span><span>${p}</span></li>`).join('')}
+            </ul>
+          ` : ''}
+          ${sec.table ? `
+            <div class="overflow-x-auto rounded-xl border border-stone-200 dark:border-stone-700">
+              <table class="w-full text-left text-xs sm:text-sm border-collapse">
+                <thead>
+                  <tr class="bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200">
+                    ${sec.table.headers.map(h => `<th class="p-3 font-bold border-b border-stone-200 dark:border-stone-700">${h}</th>`).join('')}
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-stone-200 dark:divide-stone-800">
+                  ${sec.table.rows.map(row => `
+                    <tr class="hover:bg-stone-50 dark:hover:bg-stone-800/40">
+                      ${row.map((cell, ci) => `<td class="p-3 align-top leading-relaxed ${ci === 0 ? 'font-semibold text-stone-900 dark:text-white w-1/4' : 'text-stone-700 dark:text-stone-300'}">${cell}</td>`).join('')}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderTopicAdvanced(topic) {
+  return `
+    <div class="space-y-4">
+      <div class="flex items-center gap-2 text-teal-700 dark:text-teal-400 font-bold text-sm">
+        <i data-lucide="sparkles" class="w-4 h-4"></i> Kiến thức Nâng cao, Bản chất sâu & Liên hệ thực tiễn ăn điểm 10
+      </div>
+      <div class="space-y-3">
+        ${topic.advanced.map((item, i) => `
+          <div class="p-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60 text-sm leading-relaxed text-stone-800 dark:text-stone-200">
+            <span class="inline-block px-2 py-0.5 rounded bg-teal-700 text-white text-[10px] font-bold mr-2">NÂNG CAO #${i + 1}</span>
+            ${item}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderTopicTraps(topic) {
+  return `
+    <div class="space-y-4">
+      <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-bold text-sm">
+        <i data-lucide="alert-triangle" class="w-4 h-4"></i> Cảnh báo Bẫy dễ sai của chuyên đề ${topic.code}
+      </div>
+      <div class="space-y-3">
+        ${topic.traps.map((tr, idx) => {
+          const trapId = `${topic.id}-${idx}`;
+          const mastered = state.progress.masteredTraps.includes(trapId);
+          return `
+            <div class="rounded-xl border ${mastered ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/40 dark:bg-emerald-950/20' : 'border-amber-200 dark:border-amber-800/60 bg-amber-50/50 dark:bg-amber-950/20'} p-4 space-y-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div class="text-sm font-semibold text-crimson-700 dark:text-crimson-400 flex items-start gap-2">
+                  <i data-lucide="x-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                  <span>Hiểu nhầm phổ biến: ${tr.wrong}</span>
+                </div>
+                <button data-toggle-trap="${trapId}" class="px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition ${mastered ? 'bg-emerald-600 text-white' : 'bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-600'}">
+                  ${mastered ? 'Đã né bẫy' : 'Đánh dấu đã nhớ'}
+                </button>
+              </div>
+              <div class="text-sm text-stone-800 dark:text-stone-200 flex items-start gap-2 pl-0.5">
+                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><strong>Hiểu chuẩn:</strong> ${tr.right}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderTopicQuickQuiz(qs) {
+  if (!qs.length) return '<p class="text-sm text-stone-500">Chưa có câu hỏi cho mục này.</p>';
+  return `
+    <div class="space-y-4">
+      <div class="text-sm font-bold text-stone-700 dark:text-stone-300">Làm nhanh ${qs.length} câu trắc nghiệm củng cố ngay sau khi đọc:</div>
+      ${qs.map((q, idx) => renderMcqCard(q, idx + 1)).join('')}
+    </div>
+  `;
+}
+
+function renderMcqCard(q, num) {
+  const res = state.progress.mcqResults[q.id];
+  const levelColors = {
+    'Nhận biết': 'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300',
+    'Thông hiểu': 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-300',
+    'Vận dụng': 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300',
+    'Câu bẫy': 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
+  };
+  return `
+    <div class="p-4 sm:p-5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/80 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-extrabold text-crimson-700 dark:text-crimson-400">Câu ${num}</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">Chương ${q.ch}</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${levelColors[q.level] || ''}">${q.level}</span>
+        </div>
+        ${res ? `<button data-retry-mcq="${q.id}" class="text-[11px] font-semibold text-stone-500 hover:text-crimson-600">Làm lại</button>` : ''}
+      </div>
+      <p class="text-sm sm:text-[15px] font-semibold leading-relaxed">${q.q}</p>
+      <div class="grid gap-2">
+        ${q.opts.map((opt, oi) => {
+          const letters = ['A', 'B', 'C', 'D'];
+          let cls = 'border-stone-200 dark:border-stone-700 hover:border-crimson-400 hover:bg-stone-50 dark:hover:bg-stone-800';
+          if (res) {
+            if (oi === q.ans) cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-semibold';
+            else if (oi === res.selected && oi !== q.ans) cls = 'border-crimson-500 bg-crimson-50 dark:bg-crimson-950/40 text-crimson-900 dark:text-crimson-200';
+            else cls = 'border-stone-200 dark:border-stone-800 opacity-60';
+          }
+          return `
+            <button data-answer-mcq="${q.id}" data-opt="${oi}" ${res ? 'disabled' : ''} class="w-full text-left px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm transition flex items-start gap-2.5 ${cls}">
+              <span class="w-5 h-5 rounded-md bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-[11px] font-bold shrink-0 mt-0.5">${letters[oi]}</span>
+              <span>${opt}</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+      ${res ? `
+        <div class="p-3.5 rounded-xl text-xs sm:text-sm leading-relaxed ${res.correct ? 'bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200' : 'bg-crimson-50 dark:bg-crimson-950/30 border border-crimson-200 dark:border-crimson-800 text-crimson-900 dark:text-crimson-200'}">
+          <strong>${res.correct ? 'Chính xác!' : 'Chưa đúng!'}</strong> ${q.exp}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+// ============================================================================
+// 12. VIEW: PRACTICE ARENA (MCQ + ĐÚNG/SAI + GHÉP CẶP + THI THỬ)
+// ============================================================================
+function renderPractice() {
+  const tabs = [
+    { id: 'mcq', label: `Trắc nghiệm (${MCQ_BANK.length})`, icon: 'list-checks' },
+    { id: 'tf', label: `Săn bẫy Đúng/Sai (${TF_BANK.length})`, icon: 'shield-alert' },
+    { id: 'match', label: 'Ghép cặp Khái niệm', icon: 'git-compare' },
+    { id: 'mock', label: 'Thi thử tính giờ', icon: 'timer' }
+  ];
+
+  return `
+    <div class="space-y-5 fade-in">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold">Phòng Luyện Tập Đa Dạng</h2>
+          <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">Luyện 4 dạng bài tập khác nhau để phản xạ nhanh và né toàn bộ bẫy đề thi.</p>
+        </div>
+        <div class="flex flex-wrap gap-1.5 bg-stone-100 dark:bg-stone-900 p-1 rounded-xl border border-stone-200 dark:border-stone-800">
+          ${tabs.map(t => `
+            <button data-practice-mode="${t.id}" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${state.practiceMode === t.id ? 'bg-crimson-700 text-white shadow-xs' : 'text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-800'}">
+              <i data-lucide="${t.icon}" class="w-3.5 h-3.5"></i> ${t.label}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      ${state.practiceMode === 'mcq' ? renderPracticeMcq() : ''}
+      ${state.practiceMode === 'tf' ? renderPracticeTf() : ''}
+      ${state.practiceMode === 'match' ? renderPracticeMatch() : ''}
+      ${state.practiceMode === 'mock' ? renderPracticeMock() : ''}
+    </div>
+  `;
+}
+
+function renderPracticeMcq() {
+  let list = MCQ_BANK.filter(q => {
+    if (state.mcqFilterCh !== 'all' && String(q.ch) !== String(state.mcqFilterCh)) return false;
+    if (state.mcqFilterLevel !== 'all' && q.level !== state.mcqFilterLevel) return false;
+    if (state.mcqOnlyWrong) {
+      const r = state.progress.mcqResults[q.id];
+      if (!r || r.correct) return false;
+    }
+    return true;
+  });
+
+  return `
+    <div class="space-y-4">
+      <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-1.5 text-xs">
+          <span class="font-semibold text-stone-500">Chương:</span>
+          ${['all', '1', '2', '3'].map(c => `
+            <button data-mcq-ch="${c}" class="px-2.5 py-1 rounded-lg font-semibold ${String(state.mcqFilterCh) === c ? 'bg-crimson-700 text-white' : 'bg-stone-100 dark:bg-stone-800'}">${c === 'all' ? 'Tất cả' : 'Ch ' + c}</button>
+          `).join('')}
+        </div>
+        <div class="flex items-center gap-1.5 text-xs">
+          <span class="font-semibold text-stone-500">Mức độ:</span>
+          ${['all', 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Câu bẫy'].map(lv => `
+            <button data-mcq-lv="${lv}" class="px-2.5 py-1 rounded-lg font-semibold ${state.mcqFilterLevel === lv ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900' : 'bg-stone-100 dark:bg-stone-800'}">${lv === 'all' ? 'Tất cả' : lv}</button>
+          `).join('')}
+        </div>
+        <button data-toggle-wrong="1" class="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold border transition ${state.mcqOnlyWrong ? 'bg-crimson-700 text-white border-crimson-700' : 'border-stone-300 dark:border-stone-700'}">
+          Chỉ hiện câu từng sai
+        </button>
+      </div>
+
+      ${list.length === 0 ? `
+        <div class="text-center py-12 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 text-sm text-stone-500">
+          Không có câu hỏi nào khớp bộ lọc hiện tại.
+        </div>
+      ` : `
+        <div class="space-y-3.5">
+          ${list.map((q, i) => renderMcqCard(q, i + 1)).join('')}
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function renderPracticeTf() {
+  const list = TF_BANK.filter(t => state.tfFilterCh === 'all' || String(t.ch) === String(state.tfFilterCh));
+  return `
+    <div class="space-y-4">
+      <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5 text-xs">
+          <span class="font-semibold text-stone-500">Lọc theo Chương:</span>
+          ${['all', '1', '2', '3'].map(c => `
+            <button data-tf-ch="${c}" class="px-2.5 py-1 rounded-lg font-semibold ${String(state.tfFilterCh) === c ? 'bg-crimson-700 text-white' : 'bg-stone-100 dark:bg-stone-800'}">${c === 'all' ? 'Tất cả (24)' : 'Chương ' + c}</button>
+          `).join('')}
+        </div>
+        <span class="text-xs text-stone-500">Đọc kỹ từng từ khóa: <em>tuyệt đối/tương đối, trực tiếp/sâu xa, duy nhất/cơ bản</em></span>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-3.5">
+        ${list.map((item, idx) => {
+          const res = state.progress.tfResults[item.id];
+          return `
+            <div class="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col justify-between gap-3">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-[11px] font-bold text-amber-700 dark:text-amber-400">Nhận định #${idx + 1} • Chương ${item.ch}</span>
+                  ${res ? `<button data-retry-tf="${item.id}" class="text-[11px] text-stone-400 hover:text-crimson-600">Làm lại</button>` : ''}
+                </div>
+                <p class="text-sm font-semibold leading-relaxed">${item.stmt}</p>
+              </div>
+              <div class="space-y-2.5">
+                <div class="grid grid-cols-2 gap-2">
+                  <button data-answer-tf="${item.id}" data-val="true" ${res ? 'disabled' : ''} class="py-2 rounded-xl text-xs font-bold border transition ${res && item.isTrue ? 'bg-emerald-600 text-white border-emerald-600' : res && res.selected === true && !item.isTrue ? 'bg-crimson-600 text-white border-crimson-600' : 'border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800'}">ĐÚNG</button>
+                  <button data-answer-tf="${item.id}" data-val="false" ${res ? 'disabled' : ''} class="py-2 rounded-xl text-xs font-bold border transition ${res && !item.isTrue ? 'bg-emerald-600 text-white border-emerald-600' : res && res.selected === false && item.isTrue ? 'bg-crimson-600 text-white border-crimson-600' : 'border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800'}">SAI</button>
+                </div>
+                ${res ? `
+                  <div class="p-3 rounded-xl text-xs leading-relaxed ${res.correct ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200' : 'bg-crimson-50 dark:bg-crimson-950/30 text-crimson-900 dark:text-crimson-200'}">
+                    ${item.exp}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function initMatchSet(setId) {
+  const set = MATCH_SETS.find(s => s.id === setId) || MATCH_SETS[0];
+  state.matchSetId = set.id;
+  state.matchSelectedLeft = null;
+  state.matchMatched = [];
+  state.matchWrongPair = null;
+  state.matchRightOrder = shuffleArray(set.pairs.map((_, i) => i));
+}
+
+function renderPracticeMatch() {
+  const set = MATCH_SETS.find(s => s.id === state.matchSetId) || MATCH_SETS[0];
+  if (state.matchRightOrder.length !== set.pairs.length) {
+    state.matchRightOrder = shuffleArray(set.pairs.map((_, i) => i));
+  }
+  const doneAll = state.matchMatched.length === set.pairs.length;
+
+  return `
+    <div class="space-y-4">
+      <div class="flex flex-wrap gap-2">
+        ${MATCH_SETS.map(s => `
+          <button data-match-set="${s.id}" class="px-3 py-2 rounded-xl text-xs font-semibold border transition ${s.id === set.id ? 'bg-crimson-700 text-white border-crimson-700' : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 hover:bg-stone-100 dark:hover:bg-stone-800'}">${s.title}</button>
+        `).join('')}
+      </div>
+
+      <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 space-y-4">
+        <div class="flex items-center justify-between">
+          <p class="text-xs sm:text-sm text-stone-600 dark:text-stone-400">Chọn 1 khái niệm ở <strong>cột trái</strong>, sau đó chọn định nghĩa tương ứng ở <strong>cột phải</strong>.</p>
+          <span class="text-xs font-bold text-emerald-600">${state.matchMatched.length}/${set.pairs.length} cặp</span>
+        </div>
+
+        ${doneAll ? `
+          <div class="p-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-center space-y-2">
+            <div class="text-base font-extrabold text-emerald-800 dark:text-emerald-300">Xuất sắc! Bạn đã ghép đúng toàn bộ ${set.pairs.length} cặp khái niệm!</div>
+            <button data-match-reset="1" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700">Chơi lại & Xáo trộn</button>
+          </div>
+        ` : ''}
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="space-y-2.5">
+            ${set.pairs.map((p, idx) => {
+              const matched = state.matchMatched.includes(idx);
+              const selected = state.matchSelectedLeft === idx;
+              const wrong = state.matchWrongPair && state.matchWrongPair[0] === idx;
+              return `
+                <button data-match-left="${idx}" ${matched ? 'disabled' : ''} class="w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm font-bold transition ${matched ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-400 text-emerald-700 dark:text-emerald-300 opacity-75' : wrong ? 'bg-crimson-50 border-crimson-500 text-crimson-700' : selected ? 'bg-crimson-700 text-white border-crimson-700 shadow-sm' : 'border-stone-200 dark:border-stone-700 hover:border-crimson-400'}">
+                  ${p.left}
+                </button>
+              `;
+            }).join('')}
+          </div>
+          <div class="space-y-2.5">
+            ${state.matchRightOrder.map(origIdx => {
+              const p = set.pairs[origIdx];
+              const matched = state.matchMatched.includes(origIdx);
+              const wrong = state.matchWrongPair && state.matchWrongPair[1] === origIdx;
+              return `
+                <button data-match-right="${origIdx}" ${matched ? 'disabled' : ''} class="w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm transition ${matched ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-400 text-emerald-700 dark:text-emerald-300 opacity-75' : wrong ? 'bg-crimson-50 border-crimson-500 text-crimson-700' : 'border-stone-200 dark:border-stone-700 hover:border-crimson-400'}">
+                  ${p.right}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function startMockExam(count, minutes) {
+  if (state.mockActive && state.mockActive.timerId) clearInterval(state.mockActive.timerId);
+  const questions = shuffleArray(MCQ_BANK).slice(0, Math.min(count, MCQ_BANK.length));
+  state.mockActive = {
+    questions,
+    answers: {},
+    timeLeft: minutes * 60,
+    submitted: false,
+    total: questions.length,
+    timerId: null
+  };
+  state.mockActive.timerId = setInterval(() => {
+    if (!state.mockActive || state.mockActive.submitted) return;
+    state.mockActive.timeLeft -= 1;
+    const el = document.getElementById('mockTimerDisplay');
+    if (el) el.textContent = formatTime(state.mockActive.timeLeft);
+    if (state.mockActive.timeLeft <= 0) submitMockExam();
+  }, 1000);
+  setView('practice', { practiceMode: 'mock' });
+}
+
+function formatTime(sec) {
+  const m = Math.floor(Math.max(0, sec) / 60);
+  const s = Math.max(0, sec) % 60;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function submitMockExam() {
+  if (!state.mockActive || state.mockActive.submitted) return;
+  clearInterval(state.mockActive.timerId);
+  state.mockActive.timerId = null;
+  state.mockActive.submitted = true;
+  let score = 0;
+  state.mockActive.questions.forEach(q => {
+    const sel = state.mockActive.answers[q.id];
+    const ok = sel === q.ans;
+    if (ok) score++;
+    if (sel !== undefined) {
+      state.progress.mcqResults[q.id] = { selected: sel, correct: ok };
+    }
+  });
+  const pct = Math.round((score / state.mockActive.total) * 100);
+  const now = new Date();
+  const dateStr = `${now.getDate()}/${now.getMonth() + 1} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  state.progress.mockHistory.push({ date: dateStr, score, total: state.mockActive.total, pct });
+  saveProgress();
+  showToast(`Đã nộp bài! Kết quả: ${score}/${state.mockActive.total} (${(pct / 10).toFixed(1)} điểm)`, pct >= 80 ? 'success' : 'info');
+  render();
+}
+
+function renderPracticeMock() {
+  if (!state.mockActive) {
+    return `
+      <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 sm:p-8 text-center max-w-2xl mx-auto space-y-5">
+        <div class="w-14 h-14 rounded-2xl bg-crimson-100 dark:bg-crimson-900/40 text-crimson-700 dark:text-crimson-300 flex items-center justify-center mx-auto">
+          <i data-lucide="timer" class="w-7 h-7"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-extrabold">Phòng Thi Thử Tổng Hợp (Áp lực thời gian thật)</h3>
+          <p class="text-sm text-stone-500 dark:text-stone-400 mt-1.5">Hệ thống trộn ngẫu nhiên câu hỏi từ cả 3 chương, chấm thang điểm 10 và phân tích chi tiết lỗ hổng kiến thức ngay sau khi nộp.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-3 pt-2">
+          <button data-start-mock="20,15" class="p-4 rounded-2xl border-2 border-crimson-700 bg-crimson-50/50 dark:bg-crimson-950/30 hover:bg-crimson-100/70 transition text-left">
+            <div class="font-extrabold text-crimson-800 dark:text-crimson-300">Đề nhanh • 20 câu</div>
+            <div class="text-xs text-stone-600 dark:text-stone-400 mt-1">Thời gian: 15 phút • Kiểm tra phản xạ nhanh</div>
+          </button>
+          <button data-start-mock="40,30" class="p-4 rounded-2xl border-2 border-stone-200 dark:border-stone-700 hover:border-crimson-500 transition text-left">
+            <div class="font-extrabold">Đề chuẩn cuối kỳ • 40 câu</div>
+            <div class="text-xs text-stone-600 dark:text-stone-400 mt-1">Thời gian: 30 phút • Phủ kín toàn bộ 3 chương</div>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  const m = state.mockActive;
+  const answeredCount = Object.keys(m.answers).length;
+  let score = 0;
+  const chStats = { 1: { c: 0, t: 0 }, 2: { c: 0, t: 0 }, 3: { c: 0, t: 0 } };
+  if (m.submitted) {
+    m.questions.forEach(q => {
+      chStats[q.ch].t++;
+      if (m.answers[q.id] === q.ans) { score++; chStats[q.ch].c++; }
+    });
+  }
+
+  return `
+    <div class="space-y-4">
+      <div class="sticky top-16 z-20 bg-white/95 dark:bg-stone-900/95 backdrop-blur border border-stone-200 dark:border-stone-800 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-xl bg-crimson-100 dark:bg-crimson-900/50 text-crimson-800 dark:text-crimson-200 font-extrabold text-sm flex items-center gap-1.5">
+            <i data-lucide="clock" class="w-4 h-4"></i>
+            <span id="mockTimerDisplay">${formatTime(m.timeLeft)}</span>
+          </span>
+          <span class="text-xs font-semibold text-stone-600 dark:text-stone-300">Đã chọn: <strong>${answeredCount}/${m.total}</strong></span>
+        </div>
+        <div class="flex items-center gap-2">
+          ${!m.submitted ? `
+            <button data-submit-mock="1" class="px-4 py-2 rounded-xl bg-crimson-700 hover:bg-crimson-800 text-white text-xs font-bold">Nộp bài & Chấm điểm</button>
+          ` : `
+            <button data-exit-mock="1" class="px-4 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold">Làm đề mới</button>
+          `}
+        </div>
+      </div>
+
+      ${m.submitted ? `
+        <div class="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 grid sm:grid-cols-4 gap-4 items-center">
+          <div class="text-center sm:border-r border-stone-200 dark:border-stone-800 pr-3">
+            <div class="text-xs text-stone-500 font-semibold">ĐIỂM SỐ THANG 10</div>
+            <div class="text-4xl font-extrabold text-crimson-700 dark:text-crimson-400 mt-1">${((score / m.total) * 10).toFixed(1)}</div>
+            <div class="text-xs text-stone-500 mt-0.5">${score}/${m.total} câu đúng</div>
+          </div>
+          ${[1, 2, 3].map(ch => {
+            const s = chStats[ch];
+            const p = s.t > 0 ? Math.round((s.c / s.t) * 100) : 0;
+            return `
+              <div class="p-3 rounded-xl bg-stone-50 dark:bg-stone-800/60">
+                <div class="text-xs font-bold">Chương ${ch}</div>
+                <div class="text-lg font-extrabold mt-0.5 ${p >= 80 ? 'text-emerald-600' : p >= 50 ? 'text-amber-600' : 'text-crimson-600'}">${s.c}/${s.t} <span class="text-xs font-medium">(${p}%)</span></div>
+                <div class="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full mt-1.5"><div class="h-full bg-crimson-700 rounded-full" style="width:${p}%"></div></div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
+
+      <div class="space-y-3.5">
+        ${m.questions.map((q, idx) => {
+          const sel = m.answers[q.id];
+          const letters = ['A', 'B', 'C', 'D'];
+          return `
+            <div class="p-4 sm:p-5 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold text-crimson-700 dark:text-crimson-400">Câu ${idx + 1}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 dark:bg-stone-800">Chương ${q.ch}</span>
+              </div>
+              <p class="text-sm font-semibold">${q.q}</p>
+              <div class="grid gap-2">
+                ${q.opts.map((opt, oi) => {
+                  let cls = sel === oi ? 'border-crimson-700 bg-crimson-50 dark:bg-crimson-950/40 font-semibold' : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800';
+                  if (m.submitted) {
+                    if (oi === q.ans) cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 font-bold text-emerald-900 dark:text-emerald-200';
+                    else if (sel === oi && oi !== q.ans) cls = 'border-crimson-500 bg-crimson-50 dark:bg-crimson-950/40 text-crimson-900 dark:text-crimson-200';
+                    else cls = 'border-stone-200 dark:border-stone-800 opacity-60';
+                  }
+                  return `
+                    <button data-mock-pick="${q.id}" data-opt="${oi}" ${m.submitted ? 'disabled' : ''} class="w-full text-left px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm transition flex items-start gap-2.5 ${cls}">
+                      <span class="w-5 h-5 rounded-md bg-stone-100 dark:bg-stone-800 flex items-center justify-center text-[11px] font-bold shrink-0">${letters[oi]}</span>
+                      <span>${opt}</span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              ${m.submitted ? `
+                <div class="p-3 rounded-xl text-xs bg-stone-50 dark:bg-stone-800/70 leading-relaxed">
+                  <strong>Giải thích:</strong> ${q.exp}
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// 13. VIEW: ESSAYS (TỰ LUẬN & DÀN Ý ĐIỂM 10)
+// ============================================================================
+function renderEssays() {
+  const filtered = ESSAYS.filter(e => state.essayFilterCh === 'all' || String(e.ch) === String(state.essayFilterCh));
+  const active = filtered.find(e => e.id === state.activeEssayId) || filtered[0] || ESSAYS[0];
+  const noteVal = state.progress.essayNotes[active.id] || '';
+
+  return `
+    <div class="space-y-4 fade-in">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold">Kho Tự Luận & Dàn Ý Chấm Điểm 10</h2>
+          <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">10 đề tự luận kinh điển nhất, kèm từ khóa bắt buộc, khung chấm điểm (Rubric) và ô tự luyện viết.</p>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs">
+          ${['all', '1', '2', '3'].map(c => `
+            <button data-essay-ch="${c}" class="px-3 py-1.5 rounded-lg font-semibold ${String(state.essayFilterCh) === c ? 'bg-crimson-700 text-white' : 'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800'}">${c === 'all' ? 'Tất cả (10)' : 'Chương ' + c}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-5">
+        <aside class="lg:col-span-4 space-y-2">
+          ${filtered.map((e, i) => `
+            <button data-select-essay="${e.id}" class="w-full text-left p-3.5 rounded-2xl border transition ${e.id === active.id ? 'bg-crimson-50 dark:bg-crimson-950/40 border-crimson-600 shadow-xs' : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 hover:border-crimson-300'}">
+              <div class="flex items-center justify-between text-[11px] font-bold mb-1">
+                <span class="text-crimson-700 dark:text-crimson-400">Đề #${i + 1} • Chương ${e.ch}</span>
+                <span class="text-amber-600 dark:text-amber-400">${e.freq}</span>
+              </div>
+              <div class="text-xs sm:text-sm font-bold leading-snug">${e.title}</div>
+            </button>
+          `).join('')}
+        </aside>
+
+        <section class="lg:col-span-8 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-5 sm:p-6 space-y-5">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-crimson-100 dark:bg-crimson-900/50 text-crimson-800 dark:text-crimson-200">Chương ${active.ch} • ${active.freq}</span>
+            <h3 class="text-lg sm:text-xl font-extrabold mt-2 leading-snug">${active.title}</h3>
+          </div>
+
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">Từ khóa bắt buộc phải có (Giảng viên chấm ý)</div>
+            <div class="flex flex-wrap gap-1.5">
+              ${active.keywords.map(k => `<span class="px-2.5 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 text-xs font-semibold text-stone-800 dark:text-stone-200">${k}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="text-xs font-bold uppercase tracking-wider text-stone-500">Khung Dàn ý chuẩn (Tự tick từng ý khi ôn)</div>
+            ${active.rubric.map((step, si) => {
+              const key = `${active.id}-${si}`;
+              const checked = !!state.progress.essayChecks[key];
+              return `
+                <label class="flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition ${checked ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800' : 'border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800/50'}">
+                  <input type="checkbox" data-essay-check="${key}" ${checked ? 'checked' : ''} class="mt-1 w-4 h-4 accent-emerald-600 rounded" />
+                  <span class="text-sm leading-relaxed">${step}</span>
+                </label>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div class="p-4 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800/60 text-xs sm:text-sm leading-relaxed">
+              <div class="font-bold text-teal-800 dark:text-teal-300 mb-1 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4"></i> Gợi ý Liên hệ thực tiễn</div>
+              ${active.example}
+            </div>
+            <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs sm:text-sm leading-relaxed">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1 flex items-center gap-1.5"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Lỗi mất điểm cần tránh</div>
+              ${active.avoid}
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label for="essayDraftBox" class="text-xs font-bold uppercase tracking-wider text-stone-500 block">Ô tự tập lập dàn ý / Nháp bài viết (tự động lưu)</label>
+            <textarea id="essayDraftBox" data-essay-note="${active.id}" rows="5" placeholder="Tự gõ lại các ý chính hoặc đoạn liên hệ thực tiễn bằng lời của bạn để nhớ sâu..." class="w-full p-3.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-950 text-sm focus:outline-none focus:border-crimson-600">${noteVal.replace(/</g, '&lt;')}</textarea>
+          </div>
+        </section>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// 14. VIEW: TRAPS (SỔ TAY BẪY DỄ SAI TOÀN TẬP)
+// ============================================================================
+function renderTraps() {
+  const all = getAllTraps();
+  const list = all.filter(t => state.trapFilterCh === 'all' || String(t.ch) === String(state.trapFilterCh));
+  const masteredCount = all.filter(t => state.progress.masteredTraps.includes(t.id)).length;
+
+  return `
+    <div class="space-y-5 fade-in">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold flex items-center gap-2"><i data-lucide="alert-triangle" class="w-6 h-6 text-amber-600"></i> Sổ Tay Bẫy Dễ Sai Toàn Tập</h2>
+          <p class="text-xs sm:text-sm text-stone-500 dark:text-stone-400">Tổng hợp ${all.length} lỗi kinh điển khiến sinh viên mất điểm oan. Đã chinh phục: <strong>${masteredCount}/${all.length}</strong>.</p>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs">
+          ${['all', '1', '2', '3'].map(c => `
+            <button data-trap-ch="${c}" class="px-3 py-1.5 rounded-lg font-semibold ${String(state.trapFilterCh) === c ? 'bg-amber-600 text-white' : 'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800'}">${c === 'all' ? 'Tất cả' : 'Chương ' + c}</button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        ${list.map((tr, i) => {
+          const mastered = state.progress.masteredTraps.includes(tr.id);
+          return `
+            <div class="rounded-2xl border p-4 sm:p-5 flex flex-col justify-between gap-3 ${mastered ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800' : 'bg-white dark:bg-stone-900 border-amber-200 dark:border-amber-800/60'}">
+              <div class="space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300">BẪY #${i + 1} • Mục ${tr.topicCode}</span>
+                  <button data-toggle-trap="${tr.id}" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition ${mastered ? 'bg-emerald-600 text-white' : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200'}">
+                    ${mastered ? 'Đã né bẫy ✓' : 'Đánh dấu đã thuộc'}
+                  </button>
+                </div>
+                <div class="text-sm font-bold text-crimson-700 dark:text-crimson-400 flex items-start gap-2">
+                  <i data-lucide="x-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                  <span>${tr.wrong}</span>
+                </div>
+                <div class="text-xs sm:text-sm text-stone-700 dark:text-stone-300 flex items-start gap-2 leading-relaxed">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                  <span>${tr.right}</span>
+                </div>
+              </div>
+              <button data-open-topic="${tr.topicId}" class="text-[11px] font-semibold text-stone-500 hover:text-crimson-600 self-start flex items-center gap-1">
+                Xem lại bài ${tr.topicCode}: ${tr.topicTitle} <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// 15. VIEW: FLASHCARDS
+// ============================================================================
+function getFilteredFlashcards() {
+  const ordered = state.fcOrder.map(id => FLASHCARDS.find(f => f.id === id)).filter(Boolean);
+  return ordered.filter(f => state.fcFilterCh === 'all' || String(f.ch) === String(state.fcFilterCh));
+}
+
+function renderFlashcards() {
+  const deck = getFilteredFlashcards();
+  if (state.fcIndex >= deck.length) state.fcIndex = 0;
+  const card = deck[state.fcIndex] || FLASHCARDS[0];
+  const known = state.progress.knownCards.includes(card.id);
+
+  return `
+    <div class="max-w-2xl mx-auto space-y-5 fade-in">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold">Flashcards Ôn Siêu Tốc</h2>
+          <p class="text-xs text-stone-500">Bấm vào thẻ (hoặc phím Space) để lật mặt đáp án. Dùng phím ← / → để chuyển thẻ.</p>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs">
+          ${['all', '1', '2', '3'].map(c => `
+            <button data-fc-ch="${c}" class="px-2.5 py-1.5 rounded-lg font-semibold ${String(state.fcFilterCh) === c ? 'bg-crimson-700 text-white' : 'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800'}">${c === 'all' ? 'Tất cả' : 'Ch ' + c}</button>
+          `).join('')}
+          <button data-fc-shuffle="1" class="px-2.5 py-1.5 rounded-lg font-semibold bg-stone-200 dark:bg-stone-800 hover:bg-stone-300 dark:hover:bg-stone-700 flex items-center gap-1">
+            <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Trộn
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs font-semibold text-stone-500">
+        <span>Thẻ ${state.fcIndex + 1} / ${deck.length} • Chương ${card.ch}</span>
+        <span>Đã thuộc: <strong class="text-emerald-600">${state.progress.knownCards.length}/${FLASHCARDS.length}</strong></span>
+      </div>
+
+      <!-- 3D Flip Card -->
+      <div class="flashcard-scene w-full h-72 sm:h-80 cursor-pointer" data-fc-flip="1">
+        <div class="flashcard-inner relative w-full h-full ${state.fcFlipped ? 'is-flipped' : ''}">
+          <!-- Front -->
+          <div class="flashcard-face absolute inset-0 rounded-3xl bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 shadow-md p-6 sm:p-8 flex flex-col items-center justify-center text-center">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-crimson-100 dark:bg-crimson-900/50 text-crimson-800 dark:text-crimson-200 mb-4">CÂU HỎI • CHƯƠNG ${card.ch}</span>
+            <p class="text-lg sm:text-xl font-extrabold leading-snug">${card.front}</p>
+            <span class="text-xs text-stone-400 mt-6 flex items-center gap-1"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> Chạm để xem đáp án</span>
+          </div>
+          <!-- Back -->
+          <div class="flashcard-face flashcard-back absolute inset-0 rounded-3xl bg-gradient-to-br from-crimson-800 to-stone-900 text-white shadow-md p-6 sm:p-8 flex flex-col items-center justify-center text-center">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/20 mb-3">ĐÁP ÁN CHUẨN</span>
+            <p class="text-sm sm:text-base leading-relaxed whitespace-pre-line font-medium">${card.back}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between gap-2">
+        <button data-fc-nav="-1" class="px-4 py-2.5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-xs sm:text-sm font-bold hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5">
+          <i data-lucide="chevron-left" class="w-4 h-4"></i> Trước
+        </button>
+        <button data-fc-known="${card.id}" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 ${known ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-stone-950 hover:bg-amber-400'}">
+          <i data-lucide="${known ? 'check-circle-2' : 'bookmark-plus'}" class="w-4 h-4"></i>
+          ${known ? 'Đã thuộc thẻ này' : 'Đánh dấu đã thuộc'}
+        </button>
+        <button data-fc-nav="1" class="px-4 py-2.5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-xs sm:text-sm font-bold hover:bg-stone-100 dark:hover:bg-stone-800 flex items-center gap-1.5">
+          Sau <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================================
+// 16. GLOBAL SEARCH
+// ============================================================================
+function performGlobalSearch(q) {
+  const box = document.getElementById('globalSearchResults');
+  const term = q.trim().toLowerCase();
+  if (!term) {
+    box.innerHTML = '<p class="text-stone-400 text-center py-6">Nhập từ khóa (ví dụ: vật chất, lượng chất, cơ sở hạ tầng, tha hóa, Lênin...)</p>';
+    return;
+  }
+  const results = [];
+  TOPICS.forEach(t => {
+    const blob = `${t.title} ${t.subtitle} ${JSON.stringify(t.core)} ${t.advanced.join(' ')}`.toLowerCase();
+    if (blob.includes(term)) {
+      results.push({ type: 'Lý thuyết', title: `${t.code}. ${t.title}`, sub: t.subtitle, action: `open-topic`, val: t.id });
+    }
+  });
+  getAllTraps().forEach(tr => {
+    if (`${tr.wrong} ${tr.right}`.toLowerCase().includes(term)) {
+      results.push({ type: 'Bẫy dễ sai', title: tr.wrong, sub: tr.right, action: `open-traps`, val: tr.ch });
+    }
+  });
+  ESSAYS.forEach(e => {
+    if (`${e.title} ${e.keywords.join(' ')}`.toLowerCase().includes(term)) {
+      results.push({ type: 'Tự luận', title: e.title, sub: `Chương ${e.ch} • ${e.freq}`, action: `open-essay`, val: e.id });
+    }
+  });
+
+  if (!results.length) {
+    box.innerHTML = `<p class="text-stone-400 text-center py-6">Không tìm thấy kết quả cho "${q.replace(/</g, '&lt;')}".</p>`;
+    return;
+  }
+
+  box.innerHTML = results.slice(0, 15).map(r => `
+    <button data-search-jump="${r.action}" data-search-val="${r.val}" class="w-full text-left p-3 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition border border-stone-200/70 dark:border-stone-800 block">
+      <div class="flex items-center gap-2 mb-0.5">
+        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.type === 'Bẫy dễ sai' ? 'bg-amber-100 text-amber-800' : r.type === 'Tự luận' ? 'bg-indigo-100 text-indigo-800' : 'bg-crimson-100 text-crimson-800'}">${r.type}</span>
+        <span class="font-bold text-xs sm:text-sm truncate">${r.title}</span>
+      </div>
+      <p class="text-xs text-stone-500 dark:text-stone-400 line-clamp-2">${r.sub}</p>
+    </button>
+  `).join('');
+}
+
+// ============================================================================
+// 17. EVENT DELEGATION & INITIALIZATION
+// ============================================================================
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('button, [data-fc-flip]');
+  if (!btn) return;
+
+  // Nav buttons
+  if (btn.dataset.nav) { setView(btn.dataset.nav); return; }
+
+  // Header controls
+  if (btn.id === 'btnMobileMenu') {
+    document.getElementById('mobileNavDrawer').classList.toggle('hidden');
+    return;
+  }
+  if (btn.id === 'btnDarkMode') {
+    state.progress.darkMode = !state.progress.darkMode;
+    applyDarkMode();
+    saveProgress();
+    return;
+  }
+  if (btn.id === 'btnSearchModal') {
+    document.getElementById('searchModal').classList.remove('hidden');
+    setTimeout(() => document.getElementById('globalSearchInput').focus(), 50);
+    return;
+  }
+  if (btn.id === 'btnCloseSearch') {
+    document.getElementById('searchModal').classList.add('hidden');
+    return;
+  }
+  if (btn.id === 'btnCancelReset') {
+    document.getElementById('resetModal').classList.add('hidden');
+    return;
+  }
+  if (btn.id === 'btnConfirmReset') {
+    const keepDark = state.progress.darkMode;
+    state.progress = JSON.parse(JSON.stringify(defaultProgress));
+    state.progress.darkMode = keepDark;
+    saveProgress();
+    document.getElementById('resetModal').classList.add('hidden');
+    showToast('Đã đặt lại toàn bộ tiến độ ôn tập.');
+    render();
+    return;
+  }
+
+  // Dashboard shortcuts
+  if (btn.dataset.action === 'go-study') { setView('study'); return; }
+  if (btn.dataset.action === 'go-traps') { setView('traps'); return; }
+  if (btn.dataset.action === 'start-mock-20') { startMockExam(20, 15); return; }
+  if (btn.dataset.action === 'open-reset') { document.getElementById('resetModal').classList.remove('hidden'); return; }
+
+  // Open specific topic
+  if (btn.dataset.openTopic) {
+    setView('study', { activeTopicId: btn.dataset.openTopic, topicSubTab: 'core' });
+    return;
+  }
+  if (btn.dataset.selectTopic) {
+    state.activeTopicId = btn.dataset.selectTopic;
+    state.topicSubTab = 'core';
+    render();
+    return;
+  }
+  if (btn.dataset.topicTab) {
+    state.topicSubTab = btn.dataset.topicTab;
+    render();
+    return;
+  }
+  if (btn.dataset.toggleDone) {
+    const id = btn.dataset.toggleDone;
+    const arr = state.progress.completedTopics;
+    const idx = arr.indexOf(id);
+    if (idx >= 0) { arr.splice(idx, 1); showToast('Đã bỏ đánh dấu hoàn thành'); }
+    else { arr.push(id); showToast('Tuyệt vời! Đã đánh dấu thuộc chuyên đề này', 'success'); }
+    saveProgress();
+    render();
+    return;
+  }
+
+  // Traps toggle & filter
+  if (btn.dataset.toggleTrap) {
+    const id = btn.dataset.toggleTrap;
+    const arr = state.progress.masteredTraps;
+    const idx = arr.indexOf(id);
+    if (idx >= 0) arr.splice(idx, 1);
+    else { arr.push(id); showToast('Đã đánh dấu né được bẫy này!', 'success'); }
+    saveProgress();
+    render();
+    return;
+  }
+  if (btn.dataset.trapCh) {
+    state.trapFilterCh = btn.dataset.trapCh;
+    render();
+    return;
+  }
+
+  // Practice mode switching
+  if (btn.dataset.practiceMode) {
+    state.practiceMode = btn.dataset.practiceMode;
+    render();
+    return;
+  }
+
+  // MCQ interactions
+  if (btn.dataset.mcqCh) { state.mcqFilterCh = btn.dataset.mcqCh; render(); return; }
+  if (btn.dataset.mcqLv) { state.mcqFilterLevel = btn.dataset.mcqLv; render(); return; }
+  if (btn.dataset.toggleWrong) { state.mcqOnlyWrong = !state.mcqOnlyWrong; render(); return; }
+  if (btn.dataset.answerMcq) {
+    const qId = btn.dataset.answerMcq;
+    const opt = Number(btn.dataset.opt);
+    const q = MCQ_BANK.find(x => x.id === qId);
+    if (!q) return;
+    state.progress.mcqResults[qId] = { selected: opt, correct: opt === q.ans };
+    saveProgress();
+    render();
+    return;
+  }
+  if (btn.dataset.retryMcq) {
+    delete state.progress.mcqResults[btn.dataset.retryMcq];
+    saveProgress();
+    render();
+    return;
+  }
+
+  // True/False interactions
+  if (btn.dataset.tfCh) { state.tfFilterCh = btn.dataset.tfCh; render(); return; }
+  if (btn.dataset.answerTf) {
+    const tfId = btn.dataset.answerTf;
+    const val = btn.dataset.val === 'true';
+    const item = TF_BANK.find(x => x.id === tfId);
+    if (!item) return;
+    state.progress.tfResults[tfId] = { selected: val, correct: val === item.isTrue };
+    saveProgress();
+    render();
+    return;
+  }
+  if (btn.dataset.retryTf) {
+    delete state.progress.tfResults[btn.dataset.retryTf];
+    saveProgress();
+    render();
+    return;
+  }
+
+  // Matching interactions
+  if (btn.dataset.matchSet) { initMatchSet(btn.dataset.matchSet); render(); return; }
+  if (btn.dataset.matchReset) { initMatchSet(state.matchSetId); render(); return; }
+  if (btn.dataset.matchLeft !== undefined) {
+    state.matchSelectedLeft = Number(btn.dataset.matchLeft);
+    state.matchWrongPair = null;
+    render();
+    return;
+  }
+  if (btn.dataset.matchRight !== undefined) {
+    if (state.matchSelectedLeft === null) {
+      showToast('Hãy chọn 1 khái niệm ở cột trái trước!', 'warn');
+      return;
+    }
+    const rightIdx = Number(btn.dataset.matchRight);
+    if (state.matchSelectedLeft === rightIdx) {
+      state.matchMatched.push(rightIdx);
+      state.matchSelectedLeft = null;
+      state.matchWrongPair = null;
+      showToast('Ghép cặp chính xác!', 'success');
+    } else {
+      state.matchWrongPair = [state.matchSelectedLeft, rightIdx];
+      showToast('Chưa khớp! Thử lại nhé.', 'warn');
+    }
+    render();
+    return;
+  }
+
+  // Mock Exam interactions
+  if (btn.dataset.startMock) {
+    const [cnt, mins] = btn.dataset.startMock.split(',').map(Number);
+    startMockExam(cnt, mins);
+    return;
+  }
+  if (btn.dataset.mockPick) {
+    if (!state.mockActive || state.mockActive.submitted) return;
+    state.mockActive.answers[btn.dataset.mockPick] = Number(btn.dataset.opt);
+    render();
+    return;
+  }
+  if (btn.dataset.submitMock) { submitMockExam(); return; }
+  if (btn.dataset.exitMock) { state.mockActive = null; render(); return; }
+
+  // Essays interactions
+  if (btn.dataset.essayCh) { state.essayFilterCh = btn.dataset.essayCh; render(); return; }
+  if (btn.dataset.selectEssay) { state.activeEssayId = btn.dataset.selectEssay; render(); return; }
+
+  // Flashcards interactions
+  if (btn.dataset.fcCh) { state.fcFilterCh = btn.dataset.fcCh; state.fcIndex = 0; state.fcFlipped = false; render(); return; }
+  if (btn.dataset.fcShuffle) { state.fcOrder = shuffleArray(state.fcOrder); state.fcIndex = 0; state.fcFlipped = false; showToast('Đã xáo trộn bộ thẻ!'); render(); return; }
+  if (btn.dataset.fcFlip) { state.fcFlipped = !state.fcFlipped; render(); return; }
+  if (btn.dataset.fcNav) {
+    const deck = getFilteredFlashcards();
+    const dir = Number(btn.dataset.fcNav);
+    state.fcIndex = (state.fcIndex + dir + deck.length) % deck.length;
+    state.fcFlipped = false;
+    render();
+    return;
+  }
+  if (btn.dataset.fcKnown) {
+    const id = btn.dataset.fcKnown;
+    const arr = state.progress.knownCards;
+    const idx = arr.indexOf(id);
+    if (idx >= 0) arr.splice(idx, 1);
+    else { arr.push(id); showToast('Đã lưu vào danh sách thẻ đã thuộc!', 'success'); }
+    saveProgress();
+    render();
+    return;
+  }
+
+  // Search Jump
+  if (btn.dataset.searchJump) {
+    document.getElementById('searchModal').classList.add('hidden');
+    const act = btn.dataset.searchJump;
+    const val = btn.dataset.searchVal;
+    if (act === 'open-topic') setView('study', { activeTopicId: val, topicSubTab: 'core' });
+    else if (act === 'open-traps') setView('traps', { trapFilterCh: val });
+    else if (act === 'open-essay') setView('essays', { essayFilterCh: 'all', activeEssayId: val });
+    return;
+  }
+});
+
+// Checkbox & Textarea events for Essays
+document.addEventListener('change', (e) => {
+  if (e.target.dataset && e.target.dataset.essayCheck) {
+    state.progress.essayChecks[e.target.dataset.essayCheck] = e.target.checked;
+    saveProgress();
+    render();
+  }
+});
+
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'globalSearchInput') {
+    performGlobalSearch(e.target.value);
+  } else if (e.target.dataset && e.target.dataset.essayNote) {
+    state.progress.essayNotes[e.target.dataset.essayNote] = e.target.value;
+    saveProgress();
+  }
+});
+
+// Keyboard shortcuts for Flashcards & Search Modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.getElementById('searchModal').classList.add('hidden');
+    document.getElementById('resetModal').classList.add('hidden');
+  }
+  if (state.view === 'flashcards' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    const deck = getFilteredFlashcards();
+    if (e.code === 'Space') { e.preventDefault(); state.fcFlipped = !state.fcFlipped; render(); }
+    else if (e.key === 'ArrowRight') { state.fcIndex = (state.fcIndex + 1) % deck.length; state.fcFlipped = false; render(); }
+    else if (e.key === 'ArrowLeft') { state.fcIndex = (state.fcIndex - 1 + deck.length) % deck.length; state.fcFlipped = false; render(); }
+  }
+});
+
+// Close search modal on backdrop click
+document.getElementById('searchModal').addEventListener('click', (e) => {
+  if (e.target.id === 'searchModal') e.target.classList.add('hidden');
+});
+
+// Boot
+applyDarkMode();
+initMatchSet('m1');
+updateNavActive();
+render();
+</script>
+</body>
+</html>
